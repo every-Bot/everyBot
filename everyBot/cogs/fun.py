@@ -105,7 +105,7 @@ class Fun(commands.Cog, name='Fun Commands'):
     """ Roulette """
     @commands.command()
     @commands.bot_has_permissions(kick_members=True)
-    @commands.cooldown(rate=1, per=600, type=commands.BucketType.user)
+    @commands.cooldown(rate=1, per=1800, type=commands.BucketType.user)
     async def roulette(self, ctx):
         responses = [
             ':gun:', ':safety_vest:', ':safety_vest:',
