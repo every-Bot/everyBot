@@ -2,12 +2,19 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
+from . import modules
+
+""" Disabled Check """
+async def check_disabled(ctx):
+    return ctx.command.name not in modules.disabled_commands
+
 class ModuleBot(commands.Cog, name="Bot Commands"):
     def __init__(self, bot):
         self.bot = bot
 
     """ Change Bot Nickname """
     @commands.command(aliases=['nickname_bot', 'nb'])
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_nicknames=True)
     @commands.has_permissions(manage_nicknames=True)
     @commands.guild_only()

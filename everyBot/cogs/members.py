@@ -1,12 +1,19 @@
 import discord
 from discord.ext import commands
 
+from . import modules
+
+""" Disabled Check """
+async def check_disabled(ctx):
+    return ctx.command.name not in modules.disabled_commands
+
 class Members(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
     """ Check when the mentioned user joined the server """
     @commands.command()
+    @commands.check(check_disabled)
     @commands.guild_only()
     async def joined(self, ctx, *, member: discord.Member=None):
         # If no member is mentioned, assume author
@@ -16,6 +23,7 @@ class Members(commands.Cog):
 
     """ Check top server role of the user """
     @commands.command(name='top_role', aliases=['toprole'])
+    @commands.check(check_disabled)
     @commands.guild_only()
     async def show_toprole(self, ctx, *, member: discord.Member=None):
         # If no member is mentioned, assume author
@@ -26,6 +34,7 @@ class Members(commands.Cog):
 
     """ Check all perms of mentioned user """
     @commands.command(name='perms', aliases=['perms_for', 'permissions'])
+    @commands.check(check_disabled)
     @commands.guild_only()
     async def check_permissions(self, ctx, *, member: discord.Member=None):
         # If no member is mentioned, assume author
@@ -44,6 +53,7 @@ class Members(commands.Cog):
 
     """ Set A User's nickname """
     @commands.command(aliases=['nick'])
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_nicknames=True)
     @commands.has_permissions(manage_nicknames=True)
     async def nickname(self, ctx, member: discord.Member=None, *nickname):

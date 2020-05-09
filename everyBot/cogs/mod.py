@@ -2,12 +2,19 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
+import . from modules
+
+""" Disabled Check """
+async def check_disabled(ctx):
+    return ctx.command.name not in modules.disabled_commands
+
 class Mod(commands.Cog, name="Moderator Commands"):
     def __init__(self, bot):
         self.bot = bot
 
     """ Kick Member """
     @commands.command()
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
@@ -28,6 +35,7 @@ class Mod(commands.Cog, name="Moderator Commands"):
 
     """ Ban Member """
     @commands.command()
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_permissions(ban_members=True)
     @commands.guild_only()
@@ -48,6 +56,7 @@ class Mod(commands.Cog, name="Moderator Commands"):
 
     """ Unban Member """
     @commands.command()
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_permissions(ban_members=True)
     @commands.guild_only()
@@ -69,6 +78,7 @@ class Mod(commands.Cog, name="Moderator Commands"):
         
     """ Add Role """
     @commands.command(aliases=['setrole', 'ar', 'sr'])
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_permissions(manage_roles=True)
     @commands.guild_only()
@@ -86,6 +96,7 @@ class Mod(commands.Cog, name="Moderator Commands"):
 
     """ Remove Role """
     @commands.command(aliases=['rmrole', 'rr'])
+    @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_permissions(manage_roles=True)
     @commands.guild_only()

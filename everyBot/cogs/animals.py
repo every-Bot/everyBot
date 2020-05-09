@@ -1,8 +1,14 @@
 import discord
 from discord.ext import commands
 
+from . import modules
+
 import json
 import requests
+
+""" Disabled Check """
+async def check_disabled(ctx):
+    return ctx.command.name not in modules.disabled_commands
 
 class Animals(commands.Cog, name='Cute Animals'):
     def __init__(self, bot):
@@ -23,6 +29,7 @@ class Animals(commands.Cog, name='Cute Animals'):
 
     """ Cats """
     @commands.command(aliases=['kitten', 'kitty'])
+    @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         response = await self.get_image(ctx, 'https://api.alexflipnote.dev/cats', 'file')
@@ -30,6 +37,7 @@ class Animals(commands.Cog, name='Cute Animals'):
 
     """ Sad Cat """
     @commands.command(aliases=['sadkitty'])
+    @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def sadcat(self, ctx):
         response = await self.get_image(ctx, 'https://api.alexflipnote.dev/sadcat', 'file')
@@ -37,6 +45,7 @@ class Animals(commands.Cog, name='Cute Animals'):
 
     """ Dogs """
     @commands.command(aliases=['doggo', 'puppy', 'pupper', 'woofer'])
+    @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
         response = await self.get_image(ctx, 'https://api.alexflipnote.dev/dogs', 'file')
@@ -44,6 +53,7 @@ class Animals(commands.Cog, name='Cute Animals'):
 
     """ Birds """
     @commands.command(aliases=['birb', 'birdy'])
+    @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def bird(self, ctx):
         response = await self.get_image(ctx, 'https://api.alexflipnote.dev/birb', 'file')
@@ -51,6 +61,7 @@ class Animals(commands.Cog, name='Cute Animals'):
 
     """ Duck """
     @commands.command(aliases=['ducky', 'duckling'])
+    @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def duck(self, ctx):
         response = await self.get_image(ctx, 'https://random-d.uk/api/v1/random', 'url')
