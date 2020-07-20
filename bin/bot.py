@@ -26,7 +26,8 @@ modules = [
     'everyBot.cogs.module_bot',
     'everyBot.cogs.fun',
     'everyBot.cogs.animals',
-    'everyBot.cogs.random_compliment'
+    'everyBot.cogs.random_compliment',
+    'everyBot.cogs.dnd'
 ]
 
 bot = commands.Bot(
