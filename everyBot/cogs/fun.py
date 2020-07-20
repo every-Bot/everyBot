@@ -74,7 +74,7 @@ class Fun(commands.Cog, name='Fun Commands'):
         # Getting insult from api
         response = requests.get('https://insult.mattbas.org/api/insult')
         await ctx.send(f'{ member.display_name }, { response.text }')
- 
+
     """ Achievement Get """
     @commands.command(aliases=['achievement-get', 'achievementget'])
     @commands.check(check_disabled)
@@ -138,6 +138,18 @@ class Fun(commands.Cog, name='Fun Commands'):
                 await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
         else:
             await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
+
+    """ Mock """
+    @commands.command()
+    @commands.check(check_disabled)
+    async def mock(self, ctx, *, text):
+        new_text = list(text)
+        for i, char in enumerate(new_text):
+            if i % 2 == 0:
+                new_text[i] = char.capitalize()
+        
+        await ctx.send("".join(new_text))
+
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
