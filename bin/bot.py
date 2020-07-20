@@ -49,4 +49,3 @@ async def on_ready():
 
 
 bot.run(token, bot=True, reconnect=True)
- 

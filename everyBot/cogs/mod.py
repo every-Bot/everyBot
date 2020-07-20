@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-import . from modules
+from . import modules
 
 """ Disabled Check """
 async def check_disabled(ctx):
