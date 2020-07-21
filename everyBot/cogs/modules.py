@@ -4,17 +4,13 @@ from discord.ext.commands import has_permissions
 
 disabled_commands = []
 
-command_attrs = {
-    'hidden': True
-}
-
-class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs):
+class Modules(commands.Cog, name='Module Commands'):
     def __init__(self, bot):
         self.bot = bot
         self.base_cogs = ['modules', 'owner', 'module_bot']
 
     """ Add module to bot """
-    @commands.command(hidden=True)
+    @commands.command()
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def add_module(self, ctx, *, cog: str):
@@ -33,7 +29,7 @@ class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs)
             await ctx.send(f'**`SUCCESS:`** The `{ cog }` module was added')
 
     """ Remove module from bot """
-    @commands.command(hidden=True)
+    @commands.command()
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def remove_module(self, ctx, *, cog: str):
@@ -52,10 +48,7 @@ class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs)
             await ctx.send(f'**`SUCCESS:`** The `{ cog }` module was removed')
 
     """ Reload Module """
-    @commands.command(
-        aliases=['reload'],
-        hidden=True
-    )
+    @commands.command(aliases=['reload'])
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def reload_module(self, ctx, *, cog: str):
@@ -73,7 +66,7 @@ class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs)
             await ctx.send(f'**`SUCCESS:`** The `{ cog }` module was reloaded')
 
     """ Disable Command """
-    @commands.command(aliases=['remove_command'], hidden=True)
+    @commands.command(aliases=['remove_command'])
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def disable_command(self, ctx, *, command: str):
@@ -85,7 +78,7 @@ class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs)
             await ctx.send(f'**`ERROR:`** Command `{ command }` not found')
 
     """ Enable Command """
-    @commands.command(aliases=['add_command'], hidden=True)
+    @commands.command(aliases=['add_command'])
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def enable_command(self, ctx, *, command: str):
@@ -96,7 +89,7 @@ class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs)
         except Exception as e:
             return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-             await ctx.send(f'**`SUCCESS:`** The `{ command }` command was enabled')
+            await ctx.send(f'**`SUCCESS:`** The `{ command }` command was enabled')
 
     """ List Disabled Commands """
     @commands.command(

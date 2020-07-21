@@ -2,11 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-command_attrs = {
-    'hidden': True
-}
-
-class Admin(commands.Cog, name='Admin Commands', command_attrs=command_attrs):
+class Admin(commands.Cog, name='Admin Commands'):
     def __init__(self, bot):
         self.bot = bot
 
