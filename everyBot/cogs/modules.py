@@ -96,7 +96,7 @@ class Modules(commands.Cog, name='Module Commands', command_attrs=command_attrs)
         except Exception as e:
             return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-             await ctx.send(f'**`SUCCESS:`** The `{ command }` command was enabled')\
+             await ctx.send(f'**`SUCCESS:`** The `{ command }` command was enabled')
 
     """ List Disabled Commands """
     @commands.command(
