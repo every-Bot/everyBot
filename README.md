@@ -16,13 +16,21 @@ Make sure you invite the bot to your server and copy the token as you will need 
 First, python dependencies must be installed:  
 `pip3 -r install requirements.txt`
 
-In `bin/bot.py`:
+Next, there is a `.secrets.json` file that sensitive and other config data is stored in, including the bot token, owner id and command prefixes.
 
-The last line in this file is where you need to put your token:
-```python
-bot.run("<token>", bot=True, reconnect=True)
+Example `.secrets.json`:
+```json
+{
+    "token": "this-is-a-secret-bot-token",
+    "ownerId": "this-is-a-user-id",
+    "prefixes": [
+        "$",
+        "e!"
+    ]
+}
 ```
-Make sure it is surrounded in quotation marks as it is a string.
+Update these values according to your own user id and bot token. These will need to be updated in order for the bot to work.
+
 
 ### Usage
 From here, the bot can be started and used simply with:  
