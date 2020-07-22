@@ -2,6 +2,7 @@ import discord
 import sys
 import os
 import traceback
+import json
 
 from discord.ext import commands
 
@@ -9,12 +10,20 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 
 def get_prefix(bot, message):
-    prefixes = ['$', 'e!']
+    prefixes = get_secret("prefixes")
 
     if not message.guild:
         return '?'
 
     return commands.when_mentioned_or(*prefixes)(bot, message)
+
+def get_secret(secret):
+    try:
+        with open(".secrets.json") as file:
+            data = json.load(file)
+            return data[secret]
+    except FileNotFoundError:
+        sys.exit("Error: Please ensure there is a .secrets.json file in everyBot's root directory")
 
 # modules
 modules = [
@@ -32,6 +41,7 @@ modules = [
 
 bot = commands.Bot(
     command_prefix=get_prefix,
+    owner_id=get_secret("ownerId"),
     case_insensitive=True
 )
 
@@ -49,4 +59,4 @@ async def on_ready():
     print(f'Successfully logged in and booted...!')
 
 
-bot.run(token, bot=True, reconnect=True)
+bot.run(get_secret("token"), bot=True, reconnect=True)
