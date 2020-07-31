@@ -143,12 +143,13 @@ class Fun(commands.Cog, name='Fun Commands'):
     @commands.command()
     @commands.check(check_disabled)
     async def mock(self, ctx, *, text):
-        new_text = list(text)
-        for i, char in enumerate(new_text):
+        await ctx.message.delete()
+        mock_text = list(text)
+        for i, char in enumerate(mock_text):
             if i % 2 == 0:
-                new_text[i] = char.capitalize()
+                mock_text[i] = char.capitalize()
         
-        await ctx.send("".join(new_text))
+        return await ctx.send("".join(mock_text))
 
 
     """ Error Check """
