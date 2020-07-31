@@ -27,6 +27,7 @@ def get_secret(secret):
 
 # modules
 modules = [
+    'everyBot.cogs.general',
     'everyBot.cogs.members',
     'everyBot.cogs.modules',
     'everyBot.cogs.owner',
