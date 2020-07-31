@@ -139,19 +139,6 @@ class Fun(commands.Cog, name='Fun Commands'):
         else:
             await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
-    """ Mock """
-    @commands.command()
-    @commands.check(check_disabled)
-    async def mock(self, ctx, *, text):
-        await ctx.message.delete()
-        mock_text = list(text)
-        for i, char in enumerate(mock_text):
-            if i % 2 == 0:
-                mock_text[i] = char.capitalize()
-        
-        return await ctx.send("".join(mock_text))
-
-
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
