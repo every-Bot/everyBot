@@ -22,20 +22,18 @@ class Text(commands.Cog, name="Text Commands"):
     @commands.command()
     @commands.check(check_disabled)
     async def mock(self, ctx, *, text):
-        await ctx.message.delete()
         mock_text = list(text)
         for i, char in enumerate(text):
             if i % 2 == 0:
                 mock_text[i] = char.capitalize()
         
-        return await ctx.send(f"{ ctx.author.display_name }: **{ ''.join(mock_text) }**")
+        return await ctx.send(f"{ ''.join(mock_text) }")
 
     """ Clap """
     @commands.command()
     @commands.check(check_disabled)
     async def clap(self, ctx, *text):
-        await ctx.message.delete()
-        return await ctx.send(f"{ ctx.author.display_name }: **{ ' :clap: '.join(text) }**")
+        return await ctx.send(f"{ ' :clap: '.join(text) } :clap:")
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
