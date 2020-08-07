@@ -139,6 +139,39 @@ class Fun(commands.Cog, name='Fun Commands'):
         else:
             await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
+    """ Urban Dictionary """
+    @commands.command()
+    @commands.check(check_disabled)
+    async def urban(self, ctx, *text):
+        # Getting definition from api
+        text = urllib.parse.quote(" ".join(text))
+        response = requests.get(f'http://api.urbandictionary.com/v0/define?term={ text }')
+
+        # Check if there is a definition for the given text
+        if not response.json()['list']:
+            error=discord.Embed(
+                title=f"No definition found",
+                color=discord.Color.red(),
+                description=f"Sorry, We could not find a definition for '{ text }' "
+            )
+            return await ctx.send(embed=error)
+
+        # Construct embed for valid request, the example and rating vars are 
+        # for whitespaces on multiline strings.
+        example=f"**Example:**\n{ response.json()['list'][0]['example'] }"
+        rating=f":thumbsup: { response.json()['list'][0]['thumbs_up'] } :thumbsdown: { response.json()['list'][0]['thumbs_down'] }"
+        embed=discord.Embed(
+            title=f"Definition of { response.json()['list'][0]['word'] }",
+            color=discord.Color.green(),
+            url=response.json()['list'][0]['permalink'],
+            description=f"{ response.json()['list'][0]['definition'] }\n\n{ example }\n\n{ rating }"
+        )
+        embed.set_thumbnail(url="https://i.imgur.com/RoKVYoy.jpeg")
+        embed.set_author(name=f"Definition by: { response.json()['list'][0]['author'] } ")
+
+        return await ctx.send(embed=embed)
+
+
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
