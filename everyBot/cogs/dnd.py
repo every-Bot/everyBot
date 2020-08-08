@@ -10,7 +10,7 @@ import random
 async def check_disabled(ctx):
     return ctx.command.name not in modules.disabled_commands
 
-class DnD(commands.Cog, name='DnD Commands'):
+class DnD(commands.Cog, name='DnD'):
     def __init__(self, bot):
         self.bot = bot
 

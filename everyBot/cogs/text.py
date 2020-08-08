@@ -7,7 +7,7 @@ from . import modules
 async def check_disabled(ctx):
     return ctx.command.name not in modules.disabled_commands
 
-class Text(commands.Cog, name="Text Commands"):
+class Text(commands.Cog, name="Text"):
     def __init__(self, bot):
         self.bot = bot
 

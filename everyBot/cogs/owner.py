@@ -3,7 +3,7 @@ from discord.ext import commands
 
 import sys
 
-class Owner(commands.Cog, name='Owner Commands'):
+class Owner(commands.Cog, name='Owner'):
     def __init__(self, bot):
         self.bot = bot
 

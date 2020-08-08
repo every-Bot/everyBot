@@ -4,7 +4,7 @@ from discord.ext import commands
 import requests
 import random
 
-class RandomCompliment(commands.Cog, name="Random compliment"):
+class RandomCompliment(commands.Cog, name="Random"):
     def __init__(self, bot):
         self.bot = bot
 

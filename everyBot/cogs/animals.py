@@ -10,7 +10,7 @@ import requests
 async def check_disabled(ctx):
     return ctx.command.name not in modules.disabled_commands
 
-class Animals(commands.Cog, name='Cute Animals'):
+class Animals(commands.Cog, name='Animals'):
     def __init__(self, bot):
         self.bot = bot
 

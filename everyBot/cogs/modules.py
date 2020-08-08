@@ -4,7 +4,7 @@ from discord.ext.commands import has_permissions
 
 disabled_commands = []
 
-class Modules(commands.Cog, name='Module Commands'):
+class Modules(commands.Cog, name='Module'):
     def __init__(self, bot):
         self.bot = bot
         self.base_cogs = ['modules', 'owner', 'module_bot']
