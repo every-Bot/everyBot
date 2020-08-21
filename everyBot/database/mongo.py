@@ -1,0 +1,34 @@
+from motor.motor_asyncio import AsyncIOMotorClient
+from umongo import Document, EmbeddedDocument, Instance, fields
+from datetime import datetime
+
+db = AsyncIOMotorClient()
+collection = db[]
+instance = Instance(collection)
+
+@instance.register
+class Member(Document):
+    class Meta:
+        strict = False
+    
+    id = fields.IntegerField(attribute="_id")
+    coins = fields.IntegerField(default=0)
+    last_collected = fields.DateTimeField(default=datetime.min)
+
+@instance.register
+class Guild(Document):
+    class Meta:
+        strict = False
+
+    id = fields.IntegerField(attribute="_id")
+    channels = fields.ListField(fields.IntegerField, default=list)
+    prefix = fields.StringField(default=None)
+    modules = fields.ListField(fields.StringField, default=list)
+    disabled_commands = fields.ListField(fields.StringField, default=list)
+
+@instance.register
+class MemberWarning(Document):
+    id = fields.IntegerField(attribute="_id")
+    member_id = fields.IntegerField(required=True)
+    reason = fields.StringField(default=None)
+    active = fields.BooleanField(default=True)

@@ -2,13 +2,11 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-from . import modules
-
 import random
 
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in modules.disabled_commands
+    return ctx.command.name not in ctx.bot.disabled_commands
 
 class DnD(commands.Cog, name='DnD'):
     def __init__(self, bot):

@@ -1,15 +1,60 @@
 import discord
 from discord.ext import commands
 
-from . import modules
+from .. import database
 
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in modules.disabled_commands
+    return ctx.command.name not in ctx.bot.disabled_commands
 
 class Members(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    """ Register new member into the database """
+    @commands.command()
+    @commands.guild_only()
+    async def register(self, ctx):
+        response = await database.register_member(ctx.author)
+        return await ctx.send(embed=response)
+
+    """ Display profile """
+    @commands.command()
+    async def profile(self, ctx):
+        member = await database.get_member(ctx.author)
+        warnings = await database.fetch_member_warnings(ctx.author.id)
+        warnings_list = await warnings.to_list(length=3)
+        print(warnings_list)
+        embed = discord.Embed()
+
+        if not member:
+            embed.title = "Failed"
+            embed.colour = discord.Color.red()
+            embed.description = f"Could not fetch profie. You may not be registered."
+        else:
+            embed.title = f"Profile for { ctx.author.display_name }"
+            embed.colour = discord.Color.green()
+            embed.description = f"""
+                **Name:** { ctx.author.name }#{ ctx.author.discriminator }
+                **Coins:** { member.coins }
+            """
+            embed.set_thumbnail(url=ctx.author.avatar_url)
+        
+        return await ctx.send(embed=embed)
+
+    """ Search for user in database """
+    @commands.command()
+    @commands.guild_only()
+    async def getMember(self, ctx, member: discord.Member):
+        print(dir(member))
+        print(member.profile)
+
+    @commands.command()
+    @commands.guild_only()
+    async def removeMember(self, ctx, member: discord.Member):
+        await database.remove_member(member)
+        # return await ctx.send(response)
+
 
     """ Check when the mentioned user joined the server """
     @commands.command()

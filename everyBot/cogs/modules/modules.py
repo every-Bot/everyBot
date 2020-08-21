@@ -2,12 +2,9 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-disabled_commands = []
-
 class Modules(commands.Cog, name='Module'):
     def __init__(self, bot):
         self.bot = bot
-        self.base_cogs = ['modules', 'owner', 'module_bot']
 
     """ Add module to bot """
     @commands.command()
@@ -15,13 +12,13 @@ class Modules(commands.Cog, name='Module'):
     @commands.guild_only()
     async def add_module(self, ctx, *, cog: str):
         # Checking if user is trying to modify a base module
-        if cog in self.base_cogs:
+        if cog in self.bot.base_cogs:
             await ctx.send(f'**`ERROR:`** This module cannot be modified')
             return
 
         try:
             # Attempt to add module to bot
-            self.bot.load_extension(f'everyBot.cogs.{ cog }')
+            self.bot.load_extension(f'everyBot.cogs.{ cog }.{ cog }')
         except Exception as e:
             # Handle errors if any
             await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
@@ -34,13 +31,13 @@ class Modules(commands.Cog, name='Module'):
     @commands.guild_only()
     async def remove_module(self, ctx, *, cog: str):
         # Checking if user is trying to modify a base module
-        if cog in self.base_cogs:
+        if cog in self.bot.base_cogs:
             await ctx.send(f'**`ERROR:`** This module cannot be modified')
             return
 
         try:
             # Attempt to remove module from bot
-            self.bot.unload_extension(f'everyBot.cogs.{ cog }')
+            self.bot.unload_extension(f'everyBot.cogs.{ cog }.{ cog }')
         except Exception as e:
             # Handle errors if any
             await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
@@ -53,12 +50,12 @@ class Modules(commands.Cog, name='Module'):
     @commands.guild_only()
     async def reload_module(self, ctx, *, cog: str):
         # Checking if user is trying to modify a base module
-        if cog in self.base_cogs:
+        if cog in self.bot.base_cogs:
             return await ctx.send(f'**`ERROR:`** This module cannot be modified')
 
         try:
             # Attempt to reload module
-            self.bot.reload_extension(f'everyBot.cogs.{ cog }')
+            self.bot.reload_extension(f'everyBot.cogs.{ cog }.{ cog }')
         except Exception as e:
             # Handle errors if any
             await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
@@ -72,7 +69,7 @@ class Modules(commands.Cog, name='Module'):
     async def disable_command(self, ctx, *, command: str):
         bot_commands = [command.name for command in self.bot.commands]
         if command in bot_commands:
-            disabled_commands.append(command)
+            self.bot.disabled_commands.append(command)
             await ctx.send(f'**`SUCCESS:`** Command `{ command }` was disabled')
         else:
             await ctx.send(f'**`ERROR:`** Command `{ command }` not found')
@@ -83,7 +80,7 @@ class Modules(commands.Cog, name='Module'):
     @commands.guild_only()
     async def enable_command(self, ctx, *, command: str):
         try:
-            disabled_commands.remove(command)
+            self.bot.disabled_commands.remove(command)
         except ValueError:
             return await ctx.send(f'**`ERROR:`** `{ command }` is either not a command or is not currently disabled')
         except Exception as e:
@@ -98,9 +95,9 @@ class Modules(commands.Cog, name='Module'):
     )
     @commands.guild_only()
     async def list_disabled_commands(self, ctx):
-        if not disabled_commands:
+        if not self.bot.disabled_commands:
             return await ctx.send("There are no disabled commands.")
-        return await ctx.send(f"The disabled commands are: { (', ').join(disabled_commands) }")
+        return await ctx.send(f"The disabled commands are: { (', ').join(self.bot.disabled_commands) }")
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
