@@ -21,10 +21,11 @@ class Members(commands.Cog):
     """ Display profile """
     @commands.command()
     async def profile(self, ctx):
-        member = await database.get_member(ctx.author)
-        warnings = await database.fetch_member_warnings(ctx.author.id)
-        warnings_list = await warnings.to_list(length=3)
-        print(warnings_list)
+        member = await database.fetch_member(ctx.author)
+        fetch_warnings = await database.fetch_member_warnings(ctx.author.id)
+        warnings_list = await fetch_warnings.to_list(length=None)
+        warnings = "\n".join(warnings_list)
+
         embed = discord.Embed()
 
         if not member:
@@ -37,17 +38,11 @@ class Members(commands.Cog):
             embed.description = f"""
                 **Name:** { ctx.author.name }#{ ctx.author.discriminator }
                 **Coins:** { member.coins }
+                **Warnings:** { warnings }
             """
             embed.set_thumbnail(url=ctx.author.avatar_url)
         
         return await ctx.send(embed=embed)
-
-    """ Search for user in database """
-    @commands.command()
-    @commands.guild_only()
-    async def getMember(self, ctx, member: discord.Member):
-        print(dir(member))
-        print(member.profile)
 
     @commands.command()
     @commands.guild_only()

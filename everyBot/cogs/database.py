@@ -33,7 +33,7 @@ async def register_member(member: discord.Member) -> discord.Embed:
 
     return embed
 
-async def get_member(member: discord.Member) -> mongo.Member:
+async def fetch_member(member: discord.Member) -> mongo.Member:
     return await mongo.Member.find_one(
         { "_id": member.id }
     )
