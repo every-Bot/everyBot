@@ -15,8 +15,7 @@ class Members(commands.Cog):
     @commands.command()
     @commands.guild_only()
     async def register(self, ctx):
-        response = await database.register_member(ctx.author)
-        return await ctx.send(embed=response)
+        await database.register_member(ctx.author, ctx)
 
     """ Display profile """
     @commands.command()
@@ -24,7 +23,13 @@ class Members(commands.Cog):
         member = await database.fetch_member(ctx.author)
         fetch_warnings = await database.fetch_member_warnings(ctx.author.id, True)
         warnings_list = await fetch_warnings.to_list(length=None)
-        warnings = "\n".join(warnings_list)
+
+        warnings = []
+        for i, warning in enumerate(warnings_list):
+            warnings.append(f"{ i+1 }: { warning.reason }")
+
+        warnings_string = "\n" + "\n".join(warnings)
+        print(warnings_string)
 
         embed = discord.Embed()
 
@@ -38,7 +43,7 @@ class Members(commands.Cog):
             embed.description = f"""
                 **Name:** { ctx.author.name }#{ ctx.author.discriminator }
                 **Coins:** { member.coins }
-                **Warnings:** { warnings }
+                **Warnings:** { warnings_string }
             """
             embed.set_thumbnail(url=ctx.author.avatar_url)
         
