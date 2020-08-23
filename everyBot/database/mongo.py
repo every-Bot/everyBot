@@ -43,3 +43,4 @@ class MemberWarning(Document):
     member_id = fields.IntegerField(required=True)
     reason = fields.StringField(default=None)
     active = fields.BooleanField(default=True)
+    date_issued = fields.DateTimeField(default=datetime.min)

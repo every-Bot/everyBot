@@ -22,7 +22,7 @@ class Members(commands.Cog):
     @commands.command()
     async def profile(self, ctx):
         member = await database.fetch_member(ctx.author)
-        fetch_warnings = await database.fetch_member_warnings(ctx.author.id)
+        fetch_warnings = await database.fetch_member_warnings(ctx.author.id, True)
         warnings_list = await fetch_warnings.to_list(length=None)
         warnings = "\n".join(warnings_list)
 
@@ -49,7 +49,6 @@ class Members(commands.Cog):
     async def removeMember(self, ctx, member: discord.Member):
         await database.remove_member(member)
         # return await ctx.send(response)
-
 
     """ Check when the mentioned user joined the server """
     @commands.command()
