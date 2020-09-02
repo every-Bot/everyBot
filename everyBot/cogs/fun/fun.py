@@ -126,16 +126,17 @@ class Fun(commands.Cog, name='Fun'):
             ':safety_vest:', ':safety_vest:', ':safety_vest:'
         ]
         response = random.choice(responses)
+
         if response == ':gun:':
             try:
                 await ctx.author.kick(reason='roulette')
             except Exception as e:
                 # Handle errors if any
-                await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
-            else:
-                await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
-        else:
-            await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
+                return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+
+            return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+
+        return await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
     """ Urban Dictionary """
     @commands.command()
