@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from textwrap import dedent
 
 import json
 import requests
@@ -8,7 +9,7 @@ import requests
 async def check_disabled(ctx):
     return ctx.command.name not in ctx.bot.disabled_commands
 
-class Animals(commands.Cog, name='Animals'):
+class Animals(commands.Cog, name='animals'):
     def __init__(self, bot):
         self.bot = bot
 
