@@ -8,6 +8,7 @@ from discord.ext import commands
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from everyBot.cogs import database
 
 def get_prefix(bot, message):
     prefixes = get_secret("prefixes")
@@ -62,5 +63,8 @@ async def on_ready():
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
     print(f'Successfully logged in and booted...!')
 
+@bot.event
+async def on_guild_join(guild):
+    database.add_guild(guild)
 
 bot.run(get_secret("token"), bot=True, reconnect=True)

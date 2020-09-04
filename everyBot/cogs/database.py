@@ -1,6 +1,7 @@
 import discord
 import asyncio
 from datetime import datetime
+from pymongo.errors import ServerSelectionTimeoutError
 
 import sys
 import os
@@ -181,3 +182,28 @@ async def remove_member(member: discord.Member):
         { "_id": member.id }
     )
     await mongo_member.delete()
+
+async def fetch_guild(guild_id: str):
+    try:
+        return await mongo.Guild.find_one(
+            { "guild_id": guild_id }
+        )
+    except ServerSelectionTimeoutError as e:
+        raise e
+
+async def add_guild(guild):
+    new_guild = mongo.Guild(
+        guild_id = guild.id
+    )
+
+    await new_guild.commit()
+
+async def fetch_guild_disabled_commands(guild_id):
+    try:
+        guild = await fetch_guild(guild_id)
+    except ServerSelectionTimeoutError as e:
+        raise e
+
+    return guild.disabled_commands.dump()
+
+

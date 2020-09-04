@@ -32,9 +32,10 @@ class Guild(Document):
         strict = False
 
     id = fields.IntegerField(attribute="_id")
-    channels = fields.ListField(fields.IntegerField, default=list)
+    guild_id = fields.IntegerField(required=True)
+    # channels = fields.ListField(fields.IntegerField, default=list)
     prefix = fields.StringField(default=None)
-    modules = fields.ListField(fields.StringField, default=list)
+    installed_modules = fields.ListField(fields.StringField, default=list)
     disabled_commands = fields.ListField(fields.StringField, default=list)
 
 @instance.register
