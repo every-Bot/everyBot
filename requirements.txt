@@ -1,1 +1,4 @@
 discord.py
+pymongo
+umongo
+dnspython

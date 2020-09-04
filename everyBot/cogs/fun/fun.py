@@ -1,8 +1,9 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
+from pymongo.errors import ServerSelectionTimeoutError
 
-from . import modules
+from .. import database
 
 import random
 import urllib.parse
@@ -11,11 +12,34 @@ import requests
 
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in modules.disabled_commands
+    try:
+        disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
+    except ServerSelectionTimeoutError as e:
+        embed = discord.Embed(
+            title="Failed checking command",
+            colour=discord.Color.red(),
+            description=f"Could not check if command is disabled: { e }"
+        )
+        return await ctx.send(embed=embed)
+
+    return ctx.command.name not in disabled_commands
 
 class Fun(commands.Cog, name='Fun'):
     def __init__(self, bot):
         self.bot = bot
+
+    async def cog_check(self, ctx):
+        try:
+            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            embed = discord.Embed(
+                title="Failed checking module",
+                colour=discord.Color.red(),
+                description=f"Could not check if module is installed: { e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return ctx.command.cog_name.lower() in installed_modules
 
     """ Eight Ball """
     @commands.command(aliases=['eight', '8ball'])
@@ -128,16 +152,17 @@ class Fun(commands.Cog, name='Fun'):
             ':safety_vest:', ':safety_vest:', ':safety_vest:'
         ]
         response = random.choice(responses)
+
         if response == ':gun:':
             try:
                 await ctx.author.kick(reason='roulette')
             except Exception as e:
                 # Handle errors if any
-                await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
-            else:
-                await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
-        else:
-            await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
+                return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+
+            return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+
+        return await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
     """ Urban Dictionary """
     @commands.command()

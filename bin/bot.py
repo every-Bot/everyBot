@@ -8,6 +8,7 @@ from discord.ext import commands
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
+from everyBot.cogs import database
 
 def get_prefix(bot, message):
     prefixes = get_secret("prefixes")
@@ -27,24 +28,27 @@ def get_secret(secret):
 
 # modules
 modules = [
-    'everyBot.cogs.help',
-    'everyBot.cogs.text',
-    'everyBot.cogs.members',
-    'everyBot.cogs.modules',
-    'everyBot.cogs.owner',
-    'everyBot.cogs.mod',
-    'everyBot.cogs.module_bot',
-    'everyBot.cogs.fun',
-    'everyBot.cogs.animals',
-    'everyBot.cogs.random_compliment',
-    'everyBot.cogs.dnd'
-]
+    'everyBot.cogs.help.help',
+    'everyBot.cogs.text.text',
+    'everyBot.cogs.members.members',
+    'everyBot.cogs.modules.modules',
+    'everyBot.cogs.owner.owner',
+    'everyBot.cogs.moderation.moderation',
+    'everyBot.cogs.module_bot.module_bot',
+    'everyBot.cogs.fun.fun',
+    'everyBot.cogs.animals.animals',
+    'everyBot.cogs.random_compliment.random_compliment',
+    'everyBot.cogs.dnd.dnd',
+    'everyBot.cogs.template.template'
+    ]
 
 bot = commands.Bot(
     command_prefix=get_prefix,
     owner_id=get_secret("ownerId"),
     case_insensitive=True
 )
+bot.disabled_commands = []
+bot.base_cogs = ['modules', 'owner', 'module_bot']
 
 if __name__ == '__main__':
     for module in modules:
@@ -59,5 +63,8 @@ async def on_ready():
     print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
     print(f'Successfully logged in and booted...!')
 
+@bot.event
+async def on_guild_join(guild):
+    await database.add_guild(guild)
 
 bot.run(get_secret("token"), bot=True, reconnect=True)

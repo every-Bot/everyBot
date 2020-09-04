@@ -1,15 +1,82 @@
 import discord
 from discord.ext import commands
 
-from . import modules
+from pymongo.errors import ServerSelectionTimeoutError
+from .. import database
 
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in modules.disabled_commands
+    try:
+        disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
+    except ServerSelectionTimeoutError as e:
+        embed = discord.Embed(
+            title="Failed checking command",
+            colour=discord.Color.red(),
+            description=f"Could not check if command is disabled: { e }"
+        )
+        return await ctx.send(embed=embed)
+
+    return ctx.command.name not in disabled_commands
 
 class Members(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    async def cog_check(self, ctx):
+        try:
+            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            embed = discord.Embed(
+                title="Failed checking module",
+                colour=discord.Color.red(),
+                description=f"Could not check if module is installed: { e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return ctx.command.cog_name.lower() in installed_modules
+
+    """ Register new member into the database """
+    @commands.command()
+    @commands.guild_only()
+    async def register(self, ctx):
+        await database.register_member(ctx.author, ctx)
+
+    """ Display profile """
+    @commands.command()
+    async def profile(self, ctx):
+        member = await database.fetch_member(ctx.author)
+        fetch_warnings = await database.fetch_member_warnings(ctx.author.id, True)
+        warnings_list = await fetch_warnings.to_list(length=None)
+
+        warnings = []
+        for i, warning in enumerate(warnings_list):
+            warnings.append(f"{ i+1 }: { warning.reason }")
+
+        warnings_string = "\n" + "\n".join(warnings)
+
+        embed = discord.Embed()
+
+        if not member:
+            embed.title = "Failed"
+            embed.colour = discord.Color.red()
+            embed.description = f"Could not fetch profie. You may not be registered."
+        else:
+            embed.title = f"Profile for { ctx.author.display_name }"
+            embed.colour = discord.Color.green()
+            embed.description = f"""
+                **Name:** { ctx.author.name }#{ ctx.author.discriminator }
+                **Coins:** { member.coins }
+                **Warnings:** { warnings_string }
+            """
+            embed.set_thumbnail(url=ctx.author.avatar_url)
+        
+        return await ctx.send(embed=embed)
+
+    @commands.command()
+    @commands.guild_only()
+    async def removeMember(self, ctx, member: discord.Member):
+        await database.remove_member(member)
+        # return await ctx.send(response)
 
     """ Check when the mentioned user joined the server """
     @commands.command()

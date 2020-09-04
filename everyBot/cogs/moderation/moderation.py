@@ -2,15 +2,73 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
-from . import modules
+from pymongo.errors import ServerSelectionTimeoutError
+from .. import database
 
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in modules.disabled_commands
+    try:
+        disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
+    except ServerSelectionTimeoutError as e:
+        embed = discord.Embed(
+            title="Failed checking command",
+            colour=discord.Color.red(),
+            description=f"Could not check if command is disabled: { e }"
+        )
+        return await ctx.send(embed=embed)
 
-class Mod(commands.Cog, name="Moderator"):
+    return ctx.command.name not in disabled_commands
+
+class Mod(commands.Cog, name="moderator"):
     def __init__(self, bot):
         self.bot = bot
+
+    async def cog_check(self, ctx):
+        try:
+            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            embed = discord.Embed(
+                title="Failed checking module",
+                colour=discord.Color.red(),
+                description=f"Could not check if module is installed: { e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return ctx.command.cog_name.lower() in installed_modules
+
+    """ Warn member """
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.guild_only()
+    @commands.has_permissions(kick_members=True)
+    async def warn(self, ctx, member: discord.Member, *, reason):
+        await database.warn_member(member, reason, ctx)
+
+    """ Check member warnings """
+    @commands.command(aliases=['warnings'])
+    @commands.check(check_disabled)
+    @commands.guild_only()
+    async def check_warnings(self, ctx, member: discord.Member=None):
+        if not member:
+            member = ctx.author
+
+        fetch_warnings = await database.fetch_member_warnings(member.id, True)
+        warnings_list = await fetch_warnings.to_list(length=None)
+        embed = discord.Embed(
+            title=f"Warnings for { member.display_name }",
+            colour=discord.Color.green()
+        )
+
+        if not warnings_list:
+            embed.description="Member does not have any active warnings."
+        else:
+            warnings = []
+            for i, warning in enumerate(warnings_list):
+                warnings.append(f"{ i+1 }: { warning.reason }")
+            embed.description="\n".join(warnings)
+
+        return await ctx.send(embed=embed)
+
 
     """ Kick Member """
     @commands.command()
