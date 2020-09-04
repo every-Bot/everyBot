@@ -65,6 +65,6 @@ async def on_ready():
 
 @bot.event
 async def on_guild_join(guild):
-    database.add_guild(guild)
+    await database.add_guild(guild)
 
 bot.run(get_secret("token"), bot=True, reconnect=True)
