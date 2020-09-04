@@ -38,6 +38,7 @@ modules = [
     'everyBot.cogs.animals.animals',
     'everyBot.cogs.random_compliment.random_compliment',
     'everyBot.cogs.dnd.dnd'
+    'everyBot.cogs.template.template'
     ]
 
 bot = commands.Bot(
