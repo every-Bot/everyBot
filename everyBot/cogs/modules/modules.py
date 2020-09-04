@@ -2,6 +2,9 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
+from pymongo.errors import ServerSelectionTimeoutError
+from .. import database
+
 class Modules(commands.Cog, name='Module'):
     def __init__(self, bot):
         self.bot = bot
@@ -68,11 +71,30 @@ class Modules(commands.Cog, name='Module'):
     @commands.guild_only()
     async def disable_command(self, ctx, *, command: str):
         bot_commands = [command.name for command in self.bot.commands]
-        if command in bot_commands:
-            self.bot.disabled_commands.append(command)
-            await ctx.send(f'**`SUCCESS:`** Command `{ command }` was disabled')
-        else:
-            await ctx.send(f'**`ERROR:`** Command `{ command }` not found')
+        if command not in bot_commands:
+            embed = discord.Embed(
+                title="Error: Command does not exist",
+                colour=discord.Color.red(),
+                description=f"Command '{ command }' does not exist and therefore cannot be disabled."
+            )
+            return await ctx.send(embed=embed)
+
+        try:
+            await database.add_disabled_command(ctx.guild.id, command)
+        except (database.CommandAlreadyDisabled, ServerSelectionTimeoutError) as e:
+            embed = discord.Embed(
+                title=f"Error disabling command: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title="Command disabled",
+            colour=discord.Color.green(),
+            description=f"Command '{ command }' successfully disabled"
+        )
+        return await ctx.send(embed=embed)
 
     """ Enable Command """
     @commands.command(aliases=['add_command'])
@@ -80,13 +102,22 @@ class Modules(commands.Cog, name='Module'):
     @commands.guild_only()
     async def enable_command(self, ctx, *, command: str):
         try:
-            self.bot.disabled_commands.remove(command)
-        except ValueError:
-            return await ctx.send(f'**`ERROR:`** `{ command }` is either not a command or is not currently disabled')
-        except Exception as e:
-            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
-        else:
-            await ctx.send(f'**`SUCCESS:`** The `{ command }` command was enabled')
+            await database.remove_disabled_command(ctx.guild.id, command)
+        except (database.CommandNotFound, ServerSelectionTimeoutError) as e:
+            embed = discord.Embed(
+                title=f"Error enabling command: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)  
+
+        embed = discord.Embed(
+            title="Command disabled",
+            colour=discord.Color.green(),
+            description=f"Command '{ command }' successfully enabled"
+        )
+        return await ctx.send(embed=embed)   
+
 
     """ List Disabled Commands """
     @commands.command(
@@ -95,9 +126,27 @@ class Modules(commands.Cog, name='Module'):
     )
     @commands.guild_only()
     async def list_disabled_commands(self, ctx):
-        if not self.bot.disabled_commands:
-            return await ctx.send("There are no disabled commands.")
-        return await ctx.send(f"The disabled commands are: { (', ').join(self.bot.disabled_commands) }")
+        try:
+            disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
+        except ServerSelectionTimeoutError as e:
+            embed = discord.Embed(
+                title=f"Error listing disabled commands: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        commands = []
+        for command in disabled_commands:
+            commands.append(f"- { command }")
+
+        commands_string = "\n" + "\n".join(commands)
+        embed = discord.Embed(
+            title=f"Disabled commands for { ctx.guild.name }",
+            colour=discord.Color.blue(),
+            description=f"{ commands_string }"
+        )
+        return await ctx.send(embed=embed)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):

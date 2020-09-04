@@ -9,6 +9,16 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from database import mongo
 
+class CommandAlreadyDisabled(Exception):
+    def __init__(self, command_name):
+        self.message = f"Command `{ command_name }` is already disabled"
+        super().__init__(self.message)
+
+class CommandNotFound(Exception):
+    def __init__(self, command_name):
+        self.message = f"Command `{ command_name }` is is not in the list of disabled commands"
+        super().__init__(self.message)
+
 async def warn_member(member: discord.Member, reason: str, ctx):
     """Warn a member
 
@@ -206,4 +216,31 @@ async def fetch_guild_disabled_commands(guild_id):
 
     return guild.disabled_commands.dump()
 
+async def add_disabled_command(guild_id, command_name):
+    # Get guild instance from db
+    try:
+        guild = await fetch_guild(guild_id)
+    except ServerSelectionTimeoutError as e:
+        raise e 
 
+    # First we need to check if the command has already been disabled
+    if command_name in guild.disabled_commands.dump():
+        raise CommandAlreadyDisabled(command_name)
+
+    # Add command to list
+    guild.disabled_commands.append(command_name)
+    await guild.commit()
+
+async def remove_disabled_command(guild_id, command_name):
+    # Get guild instance from db
+    try:
+        guild = await fetch_guild(guild_id)
+    except ServerSelectionTimeoutError as e:
+        raise e 
+
+    # First we need to check if command is in disabled commands
+    if command_name not in guild.disabled_commands.dump():
+        raise CommandNotFound(command_name)
+
+    guild.disabled_commands.remove(command_name)
+    await guild.commit()

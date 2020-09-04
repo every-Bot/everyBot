@@ -40,7 +40,6 @@ class Members(commands.Cog):
             warnings.append(f"{ i+1 }: { warning.reason }")
 
         warnings_string = "\n" + "\n".join(warnings)
-        print(warnings_string)
 
         embed = discord.Embed()
 

@@ -126,6 +126,8 @@ class Animals(commands.Cog, name='animals'):
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
+        if 'The check functions for command' in str(error):
+            return
         embed = discord.Embed(
             title=f"Error in { ctx.command.qualified_name }",
             colour=discord.Color.red(),
