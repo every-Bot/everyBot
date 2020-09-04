@@ -19,8 +19,7 @@ class Template(commands.Cog, name="Template"):
     @commands.command()
     @commands.check(check_disabled)
     async def example(self, ctx, *, text):
-        formatted_text = " ".join(text)
-        return await ctx.send(f"These aren't the droids you're looking for. You said { formatted_text }.")
+        return await ctx.send(f"These aren't the droids you're looking for. You said { text }.")
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
