@@ -19,7 +19,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Mod(commands.Cog, name="moderator"):
+class Mod(commands.Cog, name="moderation"):
     def __init__(self, bot):
         self.bot = bot
 

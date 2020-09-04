@@ -21,12 +21,12 @@ class CommandNotFound(Exception):
 
 class ModuleAlreadyInstalled(Exception):
     def __init__(self, module_name):
-        self.message = f"The module `{ modue_name }` has already been installed on this server"
+        self.message = f"The module `{ module_name }` has already been installed on this server"
         super().__init__(self.message)
     
 class ModuleNotInstalled(Exception):
     def __init__(self, module_name):
-        self.message = f"The module `{ modue_name }` is not in the list of installed modules"
+        self.message = f"The module `{ module_name }` is not in the list of installed modules"
         super().__init__(self.message)  
 
 async def warn_member(member: discord.Member, reason: str, ctx):

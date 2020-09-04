@@ -35,9 +35,9 @@ class Modules(commands.Cog, name='Module'):
         try:
             # Attempt to add module to bot
             await database.install_module(ctx.guild.id, cog)
-        except (discord.ModuleAlreadyInstalled, ServerSelectionTimeoutError) as e:
+        except (database.ModuleAlreadyInstalled, ServerSelectionTimeoutError) as e:
             # Handle errors if any
-            embed = Embed(
+            embed = discord.Embed(
                 title=f"Error installing module: { type(e).__name__ }",
                 colour=discord.Color.red(),
                 description=f"{ e }"
@@ -75,9 +75,9 @@ class Modules(commands.Cog, name='Module'):
         try:
             # Attempt to add module to bot
             await database.remove_module(ctx.guild.id, cog)
-        except (discord.ModuleAlreadyInstalled, ServerSelectionTimeoutError) as e:
+        except (database.ModuleNotInstalled, ServerSelectionTimeoutError) as e:
             # Handle errors if any
-            embed = Embed(
+            embed = discord.Embed(
                 title=f"Error removing module: { type(e).__name__ }",
                 colour=discord.Color.red(),
                 description=f"{ e }"
