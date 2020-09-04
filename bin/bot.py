@@ -38,7 +38,7 @@ modules = [
     'everyBot.cogs.fun.fun',
     'everyBot.cogs.animals.animals',
     'everyBot.cogs.random_compliment.random_compliment',
-    'everyBot.cogs.dnd.dnd'
+    'everyBot.cogs.dnd.dnd',
     'everyBot.cogs.template.template'
     ]
 

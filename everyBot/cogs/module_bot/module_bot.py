@@ -2,9 +2,22 @@ import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
+from pymongo.errors import ServerSelectionTimeoutError
+from .. import database
+
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in ctx.bot.disabled_commands
+    try:
+        disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
+    except ServerSelectionTimeoutError as e:
+        embed = discord.Embed(
+            title="Failed checking command",
+            colour=discord.Color.red(),
+            description=f"Could not check if command is disabled: { e }"
+        )
+        return await ctx.send(embed=embed)
+
+    return ctx.command.name not in disabled_commands
 
 class ModuleBot(commands.Cog, name="Bot"):
     def __init__(self, bot):

@@ -6,17 +6,29 @@ This template cog is for reference purposes only.
 It serves no function other then to be used as a reference point for creating over cogs.
 """
 
+from pymongo.errors import ServerSelectionTimeoutError
+from .. import database
+
 """ Disabled Check """
 async def check_disabled(ctx):
-    return ctx.command.name not in ctx.bot.disabled_commands
+    try:
+        disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
+    except ServerSelectionTimeoutError as e:
+        embed = discord.Embed(
+            title="Failed checking command",
+            colour=discord.Color.red(),
+            description=f"Could not check if command is disabled: { e }"
+        )
+        return await ctx.send(embed=embed)
+
+    return ctx.command.name not in disabled_commands
 
 class Template(commands.Cog, name="Template"):
     def __init__(self, bot):
         self.bot = bot
 
     """ Example Command """
-    @commands.command(aliases=['example', 'ex', 'eg'])
-    @commands.command()
+    @commands.command(aliases=['ex', 'eg'])
     @commands.check(check_disabled)
     async def example(self, ctx, *, text):
         return await ctx.send(f"These aren't the droids you're looking for. You said { text }.")
