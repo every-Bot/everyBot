@@ -16,8 +16,18 @@ class CommandAlreadyDisabled(Exception):
 
 class CommandNotFound(Exception):
     def __init__(self, command_name):
-        self.message = f"Command `{ command_name }` is is not in the list of disabled commands"
+        self.message = f"Command `{ command_name }` is not in the list of disabled commands"
         super().__init__(self.message)
+
+class ModuleAlreadyInstalled(Exception):
+    def __init__(self, module_name):
+        self.message = f"The module `{ modue_name }` has already been installed on this server"
+        super().__init__(self.message)
+    
+class ModuleNotInstalled(Exception):
+    def __init__(self, module_name):
+        self.message = f"The module `{ modue_name }` is not in the list of installed modules"
+        super().__init__(self.message)  
 
 async def warn_member(member: discord.Member, reason: str, ctx):
     """Warn a member
@@ -208,19 +218,57 @@ async def add_guild(guild):
 
     await new_guild.commit()
 
+async def fetch_guild_installed_modules(guild_id):
+    try:
+        guild = await fetch_guild(guild_id)
+    except (ServerSelectionTimeoutError, AttributeError) as e:
+        raise e
+
+    return guild.installed_modules.dump()
+
 async def fetch_guild_disabled_commands(guild_id):
     try:
         guild = await fetch_guild(guild_id)
-    except ServerSelectionTimeoutError as e:
+    except (ServerSelectionTimeoutError, AttributeError) as e:
         raise e
 
     return guild.disabled_commands.dump()
+
+async def install_module(guild_id, module_name):
+    # Get guild instance from db
+    try:
+        guild = await fetch_guild(guild_id)
+    except (ServerSelectionTimeoutError, AttributeError) as e:
+        raise e 
+
+    # First we need to check if module is already installed
+    if module_name in guild.installed_modules.dump():
+        raise ModuleAlreadyInstalled(module_name)
+
+    # Install module
+    guild.installed_modules.append(module_name)
+    await guild.commit()
+
+async def remove_module(guild_id, module_name):
+    # Get guild instance from db
+    try:
+        guild = await fetch_guild(guild_id)
+    except (ServerSelectionTimeoutError, AttributeError) as e:
+        raise e 
+
+    # First we need to check if command is in disabled commands
+    if module_name not in guild.installed_modules.dump():
+        raise ModuleNotInstalled(module_name)
+
+    guild.installed_modules.remove(module_name)
+    await guild.commit()
+
 
 async def add_disabled_command(guild_id, command_name):
     # Get guild instance from db
     try:
         guild = await fetch_guild(guild_id)
-    except ServerSelectionTimeoutError as e:
+    except (ServerSelectionTimeoutError, AttributeError) as e:
         raise e 
 
     # First we need to check if the command has already been disabled
@@ -235,7 +283,7 @@ async def remove_disabled_command(guild_id, command_name):
     # Get guild instance from db
     try:
         guild = await fetch_guild(guild_id)
-    except ServerSelectionTimeoutError as e:
+    except (ServerSelectionTimeoutError, AttributeError) as e:
         raise e 
 
     # First we need to check if command is in disabled commands

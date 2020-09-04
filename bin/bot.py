@@ -33,7 +33,7 @@ modules = [
     'everyBot.cogs.members.members',
     'everyBot.cogs.modules.modules',
     'everyBot.cogs.owner.owner',
-    'everyBot.cogs.mod.mod',
+    'everyBot.cogs.moderation.moderation',
     'everyBot.cogs.module_bot.module_bot',
     'everyBot.cogs.fun.fun',
     'everyBot.cogs.animals.animals',

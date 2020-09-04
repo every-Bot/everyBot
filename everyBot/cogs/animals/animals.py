@@ -26,6 +26,19 @@ class Animals(commands.Cog, name='animals'):
     def __init__(self, bot):
         self.bot = bot
 
+    async def cog_check(self, ctx):
+        try:
+            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            embed = discord.Embed(
+                title="Failed checking module",
+                colour=discord.Color.red(),
+                description=f"Could not check if module is installed: { e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return ctx.command.cog_name.lower() in installed_modules
+
     async def get_image(self, ctx, url, endpoint):
         try:
             # Get requested image

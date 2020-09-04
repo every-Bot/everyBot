@@ -23,6 +23,19 @@ class ModuleBot(commands.Cog, name="Bot"):
     def __init__(self, bot):
         self.bot = bot
 
+    async def cog_check(self, ctx):
+        try:
+            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            embed = discord.Embed(
+                title="Failed checking module",
+                colour=discord.Color.red(),
+                description=f"Could not check if module is installed: { e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return ctx.command.cog_name.lower() in installed_modules
+
     """ Change Bot Nickname """
     @commands.command(aliases=['nickname_bot', 'nb'])
     @commands.check(check_disabled)
