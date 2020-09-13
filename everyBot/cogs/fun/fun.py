@@ -84,10 +84,8 @@ class Fun(commands.Cog, name='Fun'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def compliment(self, ctx, member: discord.Member):
-        # Getting compliment from api
-        response = requests.get('https://complimentr.com/api')
-        # Formatting response
-        compliment = response.json()['compliment']
+        # Get compliment from api and format response
+        compliment = (requests.get('https://complimentr.com/api')).json()['compliment']
         return await ctx.send(f'{ member.display_name }, { compliment }')
 
     """ Insult User """
@@ -136,9 +134,8 @@ class Fun(commands.Cog, name='Fun'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def trump(self, ctx):
-        response = requests.get('https://api.tronalddump.io/random/quote')
-        json_data = response.json()['value']
-        quote = f'"{ json_data }" - Donald Trump'
+        response = (requests.get('https://api.tronalddump.io/random/quote')).json()['value']
+        quote = f'"{ response }" - Donald Trump'
         return await ctx.send(quote)
 
     """ Roulette """
@@ -147,11 +144,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.bot_has_permissions(kick_members=True)
     @commands.cooldown(rate=1, per=1800, type=commands.BucketType.user)
     async def roulette(self, ctx):
-        responses = [
-            ':gun:', ':safety_vest:', ':safety_vest:',
-            ':safety_vest:', ':safety_vest:', ':safety_vest:'
-        ]
-        response = random.choice(responses)
+        response = random.choice([':gun:', ':safety_vest:', ':safety_vest:',':safety_vest:', ':safety_vest:', ':safety_vest:'])
 
         if response == ':gun:':
             try:
