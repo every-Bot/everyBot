@@ -62,7 +62,7 @@ class Text(commands.Cog, name="Text"):
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(Text(bot))

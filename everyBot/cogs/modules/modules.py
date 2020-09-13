@@ -145,9 +145,9 @@ class Modules(commands.Cog, name='Module'):
             self.bot.reload_extension(f'everyBot.cogs.{ cog }.{ cog }')
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** The `{ cog }` module was reloaded')
+            return await ctx.send(f'**`SUCCESS:`** The `{ cog }` module was reloaded')
 
     """ Disable Command """
     @commands.command(aliases=['remove_command'])
