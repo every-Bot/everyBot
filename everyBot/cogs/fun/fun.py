@@ -54,7 +54,7 @@ class Fun(commands.Cog, name='Fun'):
         ]
         # Choose random reply
         response = random.choice(responses)
-        await ctx.send(f':8ball:: "{ question }" { response }')
+        return await ctx.send(f':8ball:: "{ question }" { response }')
 
     """ FML """
     @commands.command()
@@ -65,7 +65,7 @@ class Fun(commands.Cog, name='Fun'):
         response = requests.get('https://api.alexflipnote.dev/fml')
         # Formatting 'fml'
         json_data = json.loads(response.text)
-        await ctx.send(json_data['text'])
+        return await ctx.send(json_data['text'])
 
     """ Dad Joke """
     @commands.command(aliases=['dad', 'dad-joke'])
@@ -77,7 +77,7 @@ class Fun(commands.Cog, name='Fun'):
             'Accept': 'application/json'
         }
         response = requests.get('https://icanhazdadjoke.com/', headers=headers)
-        await ctx.send(response.json()['joke'])
+        return await ctx.send(response.json()['joke'])
 
     """ Compliment User """
     @commands.command()
@@ -88,7 +88,7 @@ class Fun(commands.Cog, name='Fun'):
         response = requests.get('https://complimentr.com/api')
         # Formatting response
         compliment = response.json()['compliment']
-        await ctx.send(f'{ member.display_name }, { compliment }')
+        return await ctx.send(f'{ member.display_name }, { compliment }')
 
     """ Insult User """
     @commands.command()
@@ -97,7 +97,7 @@ class Fun(commands.Cog, name='Fun'):
     async def insult(self, ctx, member: discord.Member):
         # Getting insult from api
         response = requests.get('https://insult.mattbas.org/api/insult')
-        await ctx.send(f'{ member.display_name }, { response.text }')
+        return await ctx.send(f'{ member.display_name }, { response.text }')
 
     """ Achievement Get """
     @commands.command(aliases=['achievement-get', 'achievementget'])
@@ -105,7 +105,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def achievement(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/achievement?text={ text }')
+        return await ctx.send(f'https://api.alexflipnote.dev/achievement?text={ text }')
 
     """ Truth Scroll """
     @commands.command(aliases=['truthscroll', 'truth-scroll'])
@@ -113,7 +113,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def scroll(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/scroll?text={ text }') 
+        return await ctx.send(f'https://api.alexflipnote.dev/scroll?text={ text }') 
 
     """ Supreme """
     @commands.command()
@@ -121,7 +121,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def supreme(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/supreme?text={ text }')
+        return await ctx.send(f'https://api.alexflipnote.dev/supreme?text={ text }')
 
     """ Facts """
     @commands.command()
@@ -129,7 +129,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def facts(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/facts?text={ text }')
+        return await ctx.send(f'https://api.alexflipnote.dev/facts?text={ text }')
         
     """ Trump Quote """
     @commands.command()
@@ -139,7 +139,7 @@ class Fun(commands.Cog, name='Fun'):
         response = requests.get('https://api.tronalddump.io/random/quote')
         json_data = response.json()['value']
         quote = f'"{ json_data }" - Donald Trump'
-        await ctx.send(quote)
+        return await ctx.send(quote)
 
     """ Roulette """
     @commands.command()
@@ -202,7 +202,7 @@ class Fun(commands.Cog, name='Fun'):
         # Handling any errors within commands
         if 'The check functions for command' in str(error):
             return
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(Fun(bot))
