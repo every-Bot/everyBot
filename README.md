@@ -60,7 +60,8 @@ pip3 install supervisor`
 Create/Modify the Supervisor config file `/etc/supervisor/conf.d/everybot.conf`
 
 Sample `everybot.conf`:
-```shell
+
+```text
 [program:everybot]
 autostart=true
 autorestart=true
@@ -69,8 +70,10 @@ command = python3 /srv/everyBot/bin/bot.py
 
 Start the Supervisor service.
 
-`supervisorctl reread`  
-`supervisorctl start everybot`
+```shell
+supervisorctl reread
+supervisorctl start everybot
+```
 
 ## Discord Usage
 
