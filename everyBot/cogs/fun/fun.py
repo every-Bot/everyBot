@@ -61,11 +61,18 @@ class Fun(commands.Cog, name='Fun'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def fml(self, ctx):
-        # Getting 'fml' from api
-        response = requests.get('https://api.alexflipnote.dev/fml')
-        # Formatting 'fml'
-        json_data = json.loads(response.text)
-        return await ctx.send(json_data['text'])
+        try:
+            # Getting 'fml' from api and formatting response
+            response = json.loads((requests.get('https://api.alexflipnote.dev/fml')).text)
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return await ctx.send(response['text'])
 
     """ Dad Joke """
     @commands.command(aliases=['dad', 'dad-joke'])
@@ -76,7 +83,16 @@ class Fun(commands.Cog, name='Fun'):
         headers = {
             'Accept': 'application/json'
         }
-        response = requests.get('https://icanhazdadjoke.com/', headers=headers)
+        try:
+            response = requests.get('https://icanhazdadjoke.com/', headers=headers)
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        
         return await ctx.send(response.json()['joke'])
 
     """ Compliment User """
@@ -84,8 +100,17 @@ class Fun(commands.Cog, name='Fun'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def compliment(self, ctx, member: discord.Member):
-        # Get compliment from api and format response
-        compliment = (requests.get('https://complimentr.com/api')).json()['compliment']
+        try:
+            # Get compliment from api and format response
+            compliment = (requests.get('https://complimentr.com/api')).json()['compliment']
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        
         return await ctx.send(f'{ member.display_name }, { compliment }')
 
     """ Insult User """
@@ -94,7 +119,16 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def insult(self, ctx, member: discord.Member):
         # Getting insult from api
-        response = requests.get('https://insult.mattbas.org/api/insult')
+        try:
+            response = requests.get('https://insult.mattbas.org/api/insult')
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        
         return await ctx.send(f'{ member.display_name }, { response.text }')
 
     """ Achievement Get """
@@ -134,8 +168,16 @@ class Fun(commands.Cog, name='Fun'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def trump(self, ctx):
-        response = (requests.get('https://api.tronalddump.io/random/quote')).json()['value']
-        quote = f'"{ response }" - Donald Trump'
+        try:
+            response = (requests.get('https://api.tronalddump.io/random/quote')).json()['value']
+            quote = f'"{ response }" - Donald Trump'
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+
         return await ctx.send(quote)
 
     """ Roulette """
@@ -149,11 +191,14 @@ class Fun(commands.Cog, name='Fun'):
         if response == ':gun:':
             try:
                 await ctx.author.kick(reason='roulette')
-            except Exception as e:
-                # Handle errors if any
-                return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
-
-            return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+                return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+            except requests.exceptions.RequestException as e:
+                embed = discord.Embed(
+                    title=f"Request Error: { type(e).__name__ }",
+                    colour=discord.Color.red(),
+                    description=f"{ e }"
+                )
+            return await ctx.send(embed=embed)
 
         return await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
