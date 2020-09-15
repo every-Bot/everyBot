@@ -43,9 +43,7 @@ Update these values according to your own user id and bot token. These will need
 
 From here, the bot can be started and used simply with:  
 
-```shell
-python3 bin/bot.py
-```
+`python3 bin/bot.py`
 
 ### Server Usage
 
@@ -53,9 +51,7 @@ To run this permenantly as a process, some additional setup is required.
 
 Install [Supervisor](https://pypi.org/project/supervisor/):
 
-```shell
-pip3 install supervisor`  
-```
+`pip3 install supervisor`
 
 Create/Modify the Supervisor config file `/etc/supervisor/conf.d/everybot.conf`
 
