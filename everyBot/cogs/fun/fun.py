@@ -177,6 +177,7 @@ class Fun(commands.Cog, name='Fun'):
                 colour=discord.Color.red(),
                 description=f"{ e }"
             )
+            return await ctx.send(embed=embed)
 
         return await ctx.send(quote)
 
@@ -198,7 +199,7 @@ class Fun(commands.Cog, name='Fun'):
                     colour=discord.Color.red(),
                     description=f"{ e }"
                 )
-            return await ctx.send(embed=embed)
+                return await ctx.send(embed=embed)
 
         return await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
