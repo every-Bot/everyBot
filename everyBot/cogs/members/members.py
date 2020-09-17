@@ -86,7 +86,7 @@ class Members(commands.Cog):
         # If no member is mentioned, assume author
         if member is None:
             member = ctx.author
-        await ctx.send(f'{ member.display_name } has joined on { member.joined_at }')
+        return await ctx.send(f'{ member.display_name } has joined on { member.joined_at }')
 
     """ Check top server role of the user """
     @commands.command(name='top_role', aliases=['toprole'])
@@ -97,7 +97,7 @@ class Members(commands.Cog):
         if member is None:
             member = ctx.author
         
-        await ctx.send(f'The top role for {member.display_name} is {member.top_role.name}')
+        return await ctx.send(f'The top role for {member.display_name} is {member.top_role.name}')
 
     """ Check all perms of mentioned user """
     @commands.command(name='perms', aliases=['perms_for', 'permissions'])
@@ -116,7 +116,7 @@ class Members(commands.Cog):
         embed.set_author(icon_url=member.avatar_url, name=str(member))
         embed.add_field(name='\uFEFF', value=perms)
 
-        await ctx.send(content=None, embed=embed)
+        return await ctx.send(content=None, embed=embed)
 
     """ Set A User's nickname """
     @commands.command(aliases=['nick'])
@@ -137,14 +137,14 @@ class Members(commands.Cog):
             await member.edit(nick=nickname)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS: `** User { current_name }\'s nickname has been changed to { nickname }')
+            return await ctx.send(f'**`SUCCESS: `** User { current_name }\'s nickname has been changed to { nickname }')
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(Members(bot))

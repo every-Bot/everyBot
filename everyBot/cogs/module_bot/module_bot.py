@@ -50,14 +50,14 @@ class ModuleBot(commands.Cog, name="Bot"):
             await ctx.me.edit(nick=nickname)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS`** Bot nickname has been changed to { nickname }')
+            return await ctx.send(f'**`SUCCESS`** Bot nickname has been changed to { nickname }')
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(ModuleBot(bot))

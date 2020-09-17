@@ -54,18 +54,25 @@ class Fun(commands.Cog, name='Fun'):
         ]
         # Choose random reply
         response = random.choice(responses)
-        await ctx.send(f':8ball:: "{ question }" { response }')
+        return await ctx.send(f':8ball:: "{ question }" { response }')
 
     """ FML """
     @commands.command()
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def fml(self, ctx):
-        # Getting 'fml' from api
-        response = requests.get('https://api.alexflipnote.dev/fml')
-        # Formatting 'fml'
-        json_data = json.loads(response.text)
-        await ctx.send(json_data['text'])
+        try:
+            # Getting 'fml' from api and formatting response
+            response = json.loads((requests.get('https://api.alexflipnote.dev/fml')).text)
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        return await ctx.send(response['text'])
 
     """ Dad Joke """
     @commands.command(aliases=['dad', 'dad-joke'])
@@ -76,19 +83,35 @@ class Fun(commands.Cog, name='Fun'):
         headers = {
             'Accept': 'application/json'
         }
-        response = requests.get('https://icanhazdadjoke.com/', headers=headers)
-        await ctx.send(response.json()['joke'])
+        try:
+            response = requests.get('https://icanhazdadjoke.com/', headers=headers)
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        
+        return await ctx.send(response.json()['joke'])
 
     """ Compliment User """
     @commands.command()
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def compliment(self, ctx, member: discord.Member):
-        # Getting compliment from api
-        response = requests.get('https://complimentr.com/api')
-        # Formatting response
-        compliment = response.json()['compliment']
-        await ctx.send(f'{ member.display_name }, { compliment }')
+        try:
+            # Get compliment from api and format response
+            compliment = (requests.get('https://complimentr.com/api')).json()['compliment']
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        
+        return await ctx.send(f'{ member.display_name }, { compliment }')
 
     """ Insult User """
     @commands.command()
@@ -96,8 +119,17 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def insult(self, ctx, member: discord.Member):
         # Getting insult from api
-        response = requests.get('https://insult.mattbas.org/api/insult')
-        await ctx.send(f'{ member.display_name }, { response.text }')
+        try:
+            response = requests.get('https://insult.mattbas.org/api/insult')
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        
+        return await ctx.send(f'{ member.display_name }, { response.text }')
 
     """ Achievement Get """
     @commands.command(aliases=['achievement-get', 'achievementget'])
@@ -105,7 +137,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def achievement(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/achievement?text={ text }')
+        return await ctx.send(f'https://api.alexflipnote.dev/achievement?text={ text }')
 
     """ Truth Scroll """
     @commands.command(aliases=['truthscroll', 'truth-scroll'])
@@ -113,7 +145,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def scroll(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/scroll?text={ text }') 
+        return await ctx.send(f'https://api.alexflipnote.dev/scroll?text={ text }') 
 
     """ Supreme """
     @commands.command()
@@ -121,7 +153,7 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def supreme(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/supreme?text={ text }')
+        return await ctx.send(f'https://api.alexflipnote.dev/supreme?text={ text }')
 
     """ Facts """
     @commands.command()
@@ -129,17 +161,24 @@ class Fun(commands.Cog, name='Fun'):
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def facts(self, ctx, *, text):
         text = urllib.parse.quote(text)
-        await ctx.send(f'https://api.alexflipnote.dev/facts?text={ text }')
+        return await ctx.send(f'https://api.alexflipnote.dev/facts?text={ text }')
         
     """ Trump Quote """
     @commands.command()
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def trump(self, ctx):
-        response = requests.get('https://api.tronalddump.io/random/quote')
-        json_data = response.json()['value']
-        quote = f'"{ json_data }" - Donald Trump'
-        await ctx.send(quote)
+        try:
+            response = (requests.get('https://api.tronalddump.io/random/quote')).json()['value']
+            quote = f'"{ response }" - Donald Trump'
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+
+        return await ctx.send(quote)
 
     """ Roulette """
     @commands.command()
@@ -147,20 +186,19 @@ class Fun(commands.Cog, name='Fun'):
     @commands.bot_has_permissions(kick_members=True)
     @commands.cooldown(rate=1, per=1800, type=commands.BucketType.user)
     async def roulette(self, ctx):
-        responses = [
-            ':gun:', ':safety_vest:', ':safety_vest:',
-            ':safety_vest:', ':safety_vest:', ':safety_vest:'
-        ]
-        response = random.choice(responses)
+        response = random.choice([':gun:', ':safety_vest:', ':safety_vest:',':safety_vest:', ':safety_vest:', ':safety_vest:'])
 
         if response == ':gun:':
             try:
                 await ctx.author.kick(reason='roulette')
-            except Exception as e:
-                # Handle errors if any
-                return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
-
-            return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+                return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+            except requests.exceptions.RequestException as e:
+                embed = discord.Embed(
+                    title=f"Request Error: { type(e).__name__ }",
+                    colour=discord.Color.red(),
+                    description=f"{ e }"
+                )
+            return await ctx.send(embed=embed)
 
         return await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
 
@@ -202,7 +240,7 @@ class Fun(commands.Cog, name='Fun'):
         # Handling any errors within commands
         if 'The check functions for command' in str(error):
             return
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(Fun(bot))

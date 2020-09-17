@@ -10,14 +10,14 @@ class Owner(commands.Cog, name='Owner'):
     """ Shutdown Bot """
     @commands.command(name='shutdown', aliases=['quit'])
     async def shutdown(self, ctx):
-        await ctx.send('**`Shutting Down`** Goodbye.')
+        return await ctx.send('**`Shutting Down`** Goodbye.')
         await self.bot.logout()
         sys.exit(0)
 
     """ Restart Bot """
     @commands.command(name='restart', aliases=['reboot'])
     async def restart(self, ctx):
-        await ctx.send('**`Rebooting`**')
+        return await ctx.send('**`Rebooting`**')
         await self.bot.logout()
         sys.exit(6)
 
@@ -41,7 +41,7 @@ class Owner(commands.Cog, name='Owner'):
 
         # Setting bot activity
         await self.bot.change_presence(activity=discord.Activity(type=activity_type, name=name))
-        await ctx.send(f'**`Success:`** bot activity has been changed')
+        return await ctx.send(f'**`Success:`** bot activity has been changed')
 
     """ Change Bot Status """
     @commands.command(name='status')
@@ -63,9 +63,9 @@ class Owner(commands.Cog, name='Owner'):
             await self.bot.change_presence(status=bot_status)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** bot status changed to { bot_status }')
+            return await ctx.send(f'**`SUCCESS:`** bot status changed to { bot_status }')
 
     """ Owner Check """
     async def cog_check(self, ctx):
@@ -75,7 +75,7 @@ class Owner(commands.Cog, name='Owner'):
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(Owner(bot))
