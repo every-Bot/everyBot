@@ -37,3 +37,4 @@ class RandomCompliment(commands.Cog, name="Random"):
 
 def setup(bot):
     bot.add_cog(RandomCompliment(bot))
+    
