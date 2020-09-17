@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from .. import database
 
 import requests
 import random
@@ -37,4 +38,3 @@ class RandomCompliment(commands.Cog, name="Random"):
 
 def setup(bot):
     bot.add_cog(RandomCompliment(bot))
-    

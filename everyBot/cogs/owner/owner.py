@@ -10,14 +10,14 @@ class Owner(commands.Cog, name='Owner'):
     """ Shutdown Bot """
     @commands.command(name='shutdown', aliases=['quit'])
     async def shutdown(self, ctx):
-        return await ctx.send('**`Shutting Down`** Goodbye.')
+        await ctx.send('**`Shutting Down`** Goodbye.')
         await self.bot.logout()
         sys.exit(0)
 
     """ Restart Bot """
     @commands.command(name='restart', aliases=['reboot'])
     async def restart(self, ctx):
-        return await ctx.send('**`Rebooting`**')
+        await ctx.send('**`Rebooting`**')
         await self.bot.logout()
         sys.exit(6)
 
