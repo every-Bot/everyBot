@@ -45,16 +45,20 @@ class Fun(commands.Cog, name='Fun'):
     @commands.command(aliases=['eight', '8ball'])
     @commands.check(check_disabled)
     async def eightball(self, ctx, *, question: commands.clean_content):
-        # Define all 8ball responses
-        responses = [
+        # Define all 8ball responses and pick random choice
+        responses = random.choice([
             'Yes', 'No', 'Take a wild guess...', 'Very doubtful',
             'Sure', 'Without a doubt', 'Most likely', 'Might be possible',
             'You\'ll be the judge', 'no... (╯°□°）╯︵ ┻━┻', 'no... baka',
             'senpai, pls no ;-;'
-        ]
-        # Choose random reply
-        response = random.choice(responses)
-        return await ctx.send(f':8ball:: "{ question }" { response }')
+        ])      
+        embed = discord.Embed(
+            title = f"8ball { question }"
+            colour = discord.Color.green()
+            description=dedent(f"""{ response }""")
+        )
+
+        return await ctx.send(embed=embed)
 
     """ FML """
     @commands.command()
