@@ -53,8 +53,8 @@ class Fun(commands.Cog, name='Fun'):
             'senpai, pls no ;-;'
         ])      
         embed = discord.Embed(
-            title = f"8ball { question }"
-            colour = discord.Color.green()
+            title = f"8ball { question }",
+            colour = discord.Color.green(),
             description=dedent(f"""{ response }""")
         )
 
