@@ -19,7 +19,7 @@ Make sure you invite the bot to your server and copy the token as you will need 
 
 First, python dependencies must be installed:
 
-`pip3 -r install requirements.txt`
+`pip3 install -r requirements.txt`
 
 Next, there is a `.secrets.json` file that sensitive and other config data is stored in, including the bot token, owner id and command prefixes.
 
