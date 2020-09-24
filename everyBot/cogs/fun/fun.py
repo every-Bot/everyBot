@@ -46,16 +46,17 @@ class Fun(commands.Cog, name='Fun'):
     @commands.check(check_disabled)
     async def eightball(self, ctx, *, question: commands.clean_content):
         # Define all 8ball responses and pick random choice
-        responses = random.choice([
+        response = random.choice([
             'Yes', 'No', 'Take a wild guess...', 'Very doubtful',
             'Sure', 'Without a doubt', 'Most likely', 'Might be possible',
             'You\'ll be the judge', 'no... (╯°□°）╯︵ ┻━┻', 'no... baka',
             'senpai, pls no ;-;'
         ])      
+        
         embed = discord.Embed(
             title = f"8ball { question }",
             colour = discord.Color.green(),
-            description=dedent(f"""{ response }""")
+            description=(f"""{ response }""")
         )
 
         return await ctx.send(embed=embed)
@@ -75,8 +76,13 @@ class Fun(commands.Cog, name='Fun'):
                 description=f"{ e }"
             )
             return await ctx.send(embed=embed)
-
-        return await ctx.send(response['text'])
+        
+        embed = discord.Embed(
+            title = f"FML",
+            colour = discord.Color.green(),
+            description=(f"""{ response['text'] }""")
+        )
+        return await ctx.send(embed=embed)
 
     """ Dad Joke """
     @commands.command(aliases=['dad', 'dad-joke'])
@@ -97,7 +103,12 @@ class Fun(commands.Cog, name='Fun'):
             )
             return await ctx.send(embed=embed)
         
-        return await ctx.send(response.json()['joke'])
+        embed = discord.Embed(
+            title = f"Dad Joke",
+            colour = discord.Color.green(),
+            description=(f"""{ response.json()['joke'] }""")
+        )
+        return await ctx.send(embed=embed)
 
     """ Compliment User """
     @commands.command()
@@ -115,7 +126,12 @@ class Fun(commands.Cog, name='Fun'):
             )
             return await ctx.send(embed=embed)
         
-        return await ctx.send(f'{ member.display_name }, { compliment }')
+        embed = discord.Embed(
+            title = f"Dad Joke",
+            colour = discord.Color.green(),
+            description=(f'{ member.display_name }, { compliment }')
+        )
+        return await ctx.send(embed=embed)
 
     """ Insult User """
     @commands.command()
@@ -133,7 +149,13 @@ class Fun(commands.Cog, name='Fun'):
             )
             return await ctx.send(embed=embed)
         
-        return await ctx.send(f'{ member.display_name }, { response.text }')
+        embed = discord.Embed(
+            title = f"Insult User",
+            colour = discord.Color.green(),
+            description=(f'{ member.display_name }, { response.text }')
+        )
+        return await ctx.send(embed=embed)
+
 
     """ Achievement Get """
     @commands.command(aliases=['achievement-get', 'achievementget'])
@@ -182,8 +204,13 @@ class Fun(commands.Cog, name='Fun'):
                 description=f"{ e }"
             )
             return await ctx.send(embed=embed)
-
-        return await ctx.send(quote)
+        
+        embed = discord.Embed(
+            title = f"Trump Quote",
+            colour = discord.Color.green(),
+            description=(quote)
+        )
+        return await ctx.send(embed=embed)
 
     """ Roulette """
     @commands.command()
@@ -196,7 +223,12 @@ class Fun(commands.Cog, name='Fun'):
         if response == ':gun:':
             try:
                 await ctx.author.kick(reason='roulette')
-                return await ctx.send(f'{ response }! { ctx.author.display_name } got unlucky')
+                embed = discord.Embed(
+                    title = f"Roulette",
+                    colour = discord.Color.green(),
+                    description=(f'{ response }! { ctx.author.display_name } got unlucky')
+                )
+                return await ctx.send(embed=embed)
             except requests.exceptions.RequestException as e:
                 embed = discord.Embed(
                     title=f"Request Error: { type(e).__name__ }",
@@ -204,8 +236,13 @@ class Fun(commands.Cog, name='Fun'):
                     description=f"{ e }"
                 )
                 return await ctx.send(embed=embed)
-
-        return await ctx.send(f'{ response }! { ctx.author.display_name } was safe.. this time')
+        
+        embed = discord.Embed(
+            title = f"Roulette",
+            colour = discord.Color.green(),
+            description=(f'{ response }! { ctx.author.display_name } was safe.. this time')
+        )
+        return await ctx.send(embed=embed)
 
     """ Urban Dictionary """
     @commands.command()
