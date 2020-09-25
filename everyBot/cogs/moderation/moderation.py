@@ -174,7 +174,7 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
 
     """ System Status """
-    @commands.command(aliases=['system', 'status'])
+    @commands.command(aliases=['system','host'])
     @commands.check(check_disabled)
     @commands.guild_only()
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
