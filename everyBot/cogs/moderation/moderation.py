@@ -87,9 +87,9 @@ class Mod(commands.Cog, name="moderation"):
             await member.kick(reason=reason)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS`** User { member.display_name } has been kicked')
+            return await ctx.send(f'**`SUCCESS`** User { member.display_name } has been kicked')
 
     """ Ban Member """
     @commands.command()
@@ -108,9 +108,9 @@ class Mod(commands.Cog, name="moderation"):
             await member.ban(reason=reason)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** User { member.display_name } has been banned')
+            return await ctx.send(f'**`SUCCESS:`** User { member.display_name } has been banned')
 
     """ Unban Member """
     @commands.command()
@@ -130,9 +130,9 @@ class Mod(commands.Cog, name="moderation"):
             await ctx.guild.unban(user=user, reason=reason)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS: `** User { user.display_name } has been unbanned')
+            return await ctx.send(f'**`SUCCESS: `** User { user.display_name } has been unbanned')
         
     """ Add Role """
     @commands.command(aliases=['setrole', 'ar', 'sr'])
@@ -148,9 +148,9 @@ class Mod(commands.Cog, name="moderation"):
             await member.add_roles(role)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** role { role.name } added to { member.display_name }')
+            return await ctx.send(f'**`SUCCESS:`** role { role.name } added to { member.display_name }')
 
     """ Remove Role """
     @commands.command(aliases=['rmrole', 'rr'])
@@ -166,14 +166,14 @@ class Mod(commands.Cog, name="moderation"):
             await member.remove_roles(role)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
+            return await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
     bot.add_cog(Mod(bot))
