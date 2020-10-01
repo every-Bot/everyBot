@@ -189,10 +189,16 @@ class Mod(commands.Cog, name="moderation"):
             description = "Bot Host System Status", 
             color = discord.Color.green()
         )
+        if ((info['ram'] > 90) or (info['cpu'] > 90)):
+            embed.color =  discord.Color.red()
+        elif ((info['ram'] > 75) or (info['cpu'] > 75)):
+            embed.color =  discord.Color.orange()
+
         embed.add_field(name="Uptime", value=str(round(info['uptime']/60/60,2))+" Hours", inline=True)
         embed.add_field(name="Memory", value=str(info['ram'])+"%", inline=True)
         embed.add_field(name="CPU", value=str(info['cpu'])+"%", inline=True)
         
+
         return await ctx.send(embed=embed)
 
     """ Error Check """
