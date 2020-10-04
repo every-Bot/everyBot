@@ -5,6 +5,9 @@ from discord.ext.commands import has_permissions
 from pymongo.errors import ServerSelectionTimeoutError
 from .. import database
 
+import psutil
+import time
+
 """ Disabled Check """
 async def check_disabled(ctx):
     try:
@@ -169,6 +172,34 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
             return await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
+
+    """ System Status """
+    @commands.command(aliases=['system','host'])
+    @commands.check(check_disabled)
+    @commands.guild_only()
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    async def systemstatus(self, ctx):
+        info={}
+        info['ram']=psutil.virtual_memory().percent
+        info['cpu']=psutil.cpu_percent()
+        info['uptime']=time.time() - psutil.boot_time()
+
+        embed=discord.Embed(
+            title = "System Status", 
+            description = "Bot Host System Status", 
+            color = discord.Color.green()
+        )
+        if ((info['ram'] > 90) or (info['cpu'] > 90)):
+            embed.color =  discord.Color.red()
+        elif ((info['ram'] > 75) or (info['cpu'] > 75)):
+            embed.color =  discord.Color.orange()
+
+        embed.add_field(name="Uptime", value=str(round(info['uptime']/60/60,2))+" Hours", inline=True)
+        embed.add_field(name="Memory", value=str(info['ram'])+"%", inline=True)
+        embed.add_field(name="CPU", value=str(info['cpu'])+"%", inline=True)
+        
+
+        return await ctx.send(embed=embed)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
