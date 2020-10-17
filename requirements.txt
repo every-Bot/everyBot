@@ -2,3 +2,4 @@ discord.py
 pymongo
 umongo
 dnspython
+psutil
