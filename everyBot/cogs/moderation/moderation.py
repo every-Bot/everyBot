@@ -3,10 +3,46 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 
 from pymongo.errors import ServerSelectionTimeoutError
-from .. import database
+from everyBot.cogs import database
 
 import psutil
+import asyncio
 import time
+
+async def mute_member(ctx, member: discord.Member, reason: str, time: int):
+    # Try to get muted role from guild
+    role = discord.utils.get(ctx.guild.roles, name="muted")
+
+    # If the role doesn't exist, we need to create it
+    if not role:
+        # Try to create muted role
+        try:
+            role = await ctx.guild.create_role(name="muted", reason="To use for muting bad members")
+            # Remove perms for role to chat in any channel
+            for channel in ctx.guild.channels: 
+                await channel.set_permissions(
+                    role,
+                    send_messages=False
+                )
+        # If the bot can't create the new role
+        except discord.Forbidden as e:
+            raise e
+    
+    # Add muted role to the member, wait the specified amount of time,
+    # then unmute member by removing the role.
+    try:   
+        await member.add_roles(role)
+        embed = discord.Embed(
+            title=f"{ member.display_name } has been muted",
+            colour=discord.Color.green(),
+            description=f"**Time:** { time } minutes\n**Reason:** { reason }"
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        await ctx.send(embed=embed)
+        await asyncio.sleep(time*60)
+        await member.remove_roles(role)
+    except discord.Forbidden as e:
+        raise e
 
 """ Disabled Check """
 async def check_disabled(ctx):
@@ -44,8 +80,10 @@ class Mod(commands.Cog, name="moderation"):
     @commands.check(check_disabled)
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
-    async def warn(self, ctx, member: discord.Member, *, reason):
-        await database.warn_member(member, reason, ctx)
+    async def warn(self, ctx, member: discord.Member, *, reason="None"):
+        # response = await database.warn_member(ctx.guild.id, member.id, reason)
+        response = await database.warn_member(ctx, member, reason)
+        return await ctx.send(embed=response)
 
     """ Check member warnings """
     @commands.command(aliases=['warnings'])
@@ -55,7 +93,7 @@ class Mod(commands.Cog, name="moderation"):
         if not member:
             member = ctx.author
 
-        fetch_warnings = await database.fetch_member_warnings(member.id, True)
+        fetch_warnings = await database.fetch_member_warnings(ctx.guild.id, member.id, True)
         warnings_list = await fetch_warnings.to_list(length=None)
         embed = discord.Embed(
             title=f"Warnings for { member.display_name }",
@@ -72,6 +110,22 @@ class Mod(commands.Cog, name="moderation"):
 
         return await ctx.send(embed=embed)
 
+    """ Mute Member """
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def mute(self, ctx, member: discord.Member, reason: str="None", time: int=5):
+        try:
+            await mute_member(ctx, member, reason, time)
+        except discord.Forbidden as e:
+            embed = discord.Embed(
+                title=f"Failed muting { member.display_name }",
+                colour=discord.Color.red(),
+                description=f"{ ctx.author.display_name }, you do not have the correct permissins to mute { member.display_name }"
+            )
+            return await ctx.send(embed=embed)
 
     """ Kick Member """
     @commands.command()
@@ -203,8 +257,13 @@ class Mod(commands.Cog, name="moderation"):
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
-        # Handling any errors within commands
-        return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        # Handling any errors within command
+        embed = discord.Embed(
+            title=f"Error in { ctx.command.qualified_name }",
+            colour=discord.Color.red(),
+            description=f"{ error }"
+        )
+        return await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Mod(bot))
