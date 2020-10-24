@@ -10,7 +10,7 @@ import math
 from pymongo.errors import ServerSelectionTimeoutError
 from everyBot.cogs import database
 
-class Modules(commands.Cog, name='Module'):
+class Modules(commands.Cog, name='modules'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -185,7 +185,6 @@ class Modules(commands.Cog, name='Module'):
         modules_string = "\n" + "\n".join(modules)
         embed = discord.Embed(
             title=f"Installed modules for { ctx.guild.name }",
-            colour=discord.Color.blue(),
             description=f"{ modules_string }"
         )
         return await ctx.send(embed=embed)
@@ -307,7 +306,6 @@ class Modules(commands.Cog, name='Module'):
         commands_string = "\n" + "\n".join(commands)
         embed = discord.Embed(
             title=f"Disabled commands for { ctx.guild.name }",
-            colour=discord.Color.blue(),
             description=f"{ commands_string }"
         )
         return await ctx.send(embed=embed)
