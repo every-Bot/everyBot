@@ -87,7 +87,6 @@ async def warn_member(ctx, member, reason):
     embed.set_thumbnail(url=member.avatar_url)
     return embed
 
-
 async def register_member(member: discord.Member, ctx):
     """ Register member to the database
 
@@ -121,6 +120,7 @@ async def register_member(member: discord.Member, ctx):
             colour=discord.Color.blue(),
             description=f"Member { member.mention } already exists.\nUse `$profile` to check your profile."
         )
+        embed.set_thumbnail(url=member.avatar_url)
         return await ctx.send(embed=embed)
 
     # Create new member object
@@ -143,6 +143,7 @@ async def register_member(member: discord.Member, ctx):
         colour=discord.Color.green(),
         description=f"{ member.display_name } has been registered.\nUse `$profile` to see your new profile."
     )
+    embed.set_thumbnail(url=member.avatar_url)
     return await ctx.send(embed=embed)
 
 async def fetch_member(member: discord.Member) -> mongo.Member:
@@ -341,7 +342,6 @@ async def remove_module(guild_id, module_name):
 
     guild.installed_modules.remove(module_name)
     await guild.commit()
-
 
 async def add_disabled_command(guild_id, command_name):
     """Disable command for server

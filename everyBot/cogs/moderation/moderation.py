@@ -85,6 +85,35 @@ class Mod(commands.Cog, name="moderation"):
         response = await database.warn_member(ctx, member, reason)
         return await ctx.send(embed=response)
 
+    """ Clear member warnings"""
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def clear_warnings(self, ctx, member: discord.Member):
+        fetch_warnings = await database.fetch_member_warnings(ctx.guild.id, member.id, True)
+        warnings = await fetch_warnings.to_list(length=None)
+
+        if not warnings:
+            embed = discord.Embed(
+                title=f"No warnings for { member.display_name }",
+                colour=discord.Color.red(),
+                description=f"{ member.display_name } has no warnings, therefore their warnings cannot be cleared."
+            )
+            embed.set_thumbnail(url=member.avatar_url)
+            return await ctx.send(embed=embed)
+        for warning in warnings:
+            warning.active = False
+            await warning.commit()
+        
+        embed = discord.Embed(
+            title=f"{ member.display_name }'s warnings have been cleared",
+            colour=discord.Color.green(),
+            description=f"All active warnings for { member.display_name } have been cleared.\n\n{ member.mention }, try not to give the mods a reason to give you more ;)"
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        return await ctx.send(embed=embed)
+
     """ Check member warnings """
     @commands.command(aliases=['warnings'])
     @commands.check(check_disabled)
@@ -107,7 +136,7 @@ class Mod(commands.Cog, name="moderation"):
             for i, warning in enumerate(warnings_list):
                 warnings.append(f"{ i+1 }: { warning.reason }")
             embed.description="\n".join(warnings)
-
+        embed.set_thumbnail(url=member.avatar_url)
         return await ctx.send(embed=embed)
 
     """ Mute Member """
