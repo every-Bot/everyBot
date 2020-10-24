@@ -1,15 +1,74 @@
 import discord
 from discord.ext import commands
 from discord.ext.commands import has_permissions
+import asyncio
 
 from os import path
+from os import scandir
+import math
 
 from pymongo.errors import ServerSelectionTimeoutError
-from .. import database
+from everyBot.cogs import database
 
 class Modules(commands.Cog, name='Module'):
     def __init__(self, bot):
         self.bot = bot
+
+    """ List all available modules """
+    @commands.command()
+    @has_permissions(administrator=True)
+    @commands.guild_only()
+    async def list_modules(self, ctx):
+        modules_per_page = 5
+        modules = [f.name for f in scandir("everyBot/cogs") if f.is_dir() and f.name not in ["__pycache__", "help", "modules"]]
+        page_amount = math.ceil(len(modules) / modules_per_page)
+        pages = []
+
+        # Creating the pages
+        for x in range(page_amount):
+            rows = 0
+            page = discord.Embed(
+                title=f"Modules page { x+1 }/{ page_amount }",
+            )
+            while rows < modules_per_page:
+                try:
+                    page.add_field(name=f"{ modules[0] }", value=f"{ modules[0] }", inline=False)
+                except IndexError:
+                    break
+                del modules[0]
+                rows += 1
+            pages.append(page)
+
+        message = await ctx.send(embed=pages[0])
+
+        # Adding reactions to the message
+        await message.add_reaction(emoji='\u23ee')
+        await message.add_reaction(emoji='\u25c0')
+        await message.add_reaction(emoji='\u25b6')
+        await message.add_reaction(emoji='\u23ed')
+
+        def check(reaction, member):
+            return reaction.message.id == message.id and member == ctx.author
+
+        # Adding controls for user to change pages
+        page = 0
+        while True:
+            try:
+                reaction, member = await self.bot.wait_for('reaction_add', timeout=30.0, check=check)
+
+                if reaction.emoji == '\u23ee':
+                    page = 0
+                if reaction.emoji == '\u25c0' and page > 0:
+                    page -= 1
+                if reaction.emoji == '\u25b6' and page < len(pages):
+                    page += 1
+                if reaction.emoji == '\u23ed':
+                    page = len(pages) - 1
+
+                await message.remove_reaction(reaction.emoji, member)
+                await message.edit(embed=pages[page])
+            except asyncio.TimeoutError:
+                pass
 
     """ Add module to bot """
     @commands.command()
