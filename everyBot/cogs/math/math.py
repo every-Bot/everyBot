@@ -51,9 +51,9 @@ class Math(commands.Cog, name='Math'):
             for num in numbers[1:]:
                 title = title + " + " + num
             title = title + " ="
-        except requests.exceptions.RequestException as e:
+        except (ValueError, ValueError) as e:
             embed = discord.Embed(
-                title=f"Request Error: { type(e).__name__ }",
+                title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
                 description=f"{ e }"
             )
@@ -72,14 +72,22 @@ class Math(commands.Cog, name='Math'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def subtract(self, ctx, *numbers):
-        array = [float(i) for i in numbers]
-        response = array[0] - sum(array[1:])
+        try:
+            array = [float(i) for i in numbers]
+            response = array[0] - sum(array[1:])
 
-        title = numbers[0]
-        for num in numbers[1:]:
-            title = title + " - " + num
-        title = title + " ="
-        
+            title = numbers[0]
+            for num in numbers[1:]:
+                title = title + " - " + num
+            title = title + " ="
+        except (ValueError, ValueError) as e:
+            embed = discord.Embed(
+                title=f"{ type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
         embed = discord.Embed(
             title = f"{ title }",
             colour = discord.Color.green(),
@@ -93,16 +101,24 @@ class Math(commands.Cog, name='Math'):
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def multiply(self, ctx, *numbers):
-        array = [float(i) for i in numbers]
-        result = 1
-        for num in array:
-            result = result * num
+        try:
+            array = [float(i) for i in numbers]
+            result = 1
+            for num in array:
+                result = result * num
 
-        title = numbers[0]
-        for num in numbers[1:]:
-            title = title + " x " + num
-        title = title + " ="
-        
+            title = numbers[0]
+            for num in numbers[1:]:
+                title = title + " x " + num
+            title = title + " ="
+        except (ValueError, ValueError) as e:
+            embed = discord.Embed(
+                title=f"{ type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
         embed = discord.Embed(
             title = f"{ title }",
             colour = discord.Color.green(),
@@ -126,9 +142,9 @@ class Math(commands.Cog, name='Math'):
             for num in numbers[1:]:
                 title = title + " / " + num
             title = title + " ="
-        except requests.exceptions.RequestException as e:
+        except (ValueError, ValueError, ZeroDivisionError) as e:
             embed = discord.Embed(
-                title=f"Request Error: { type(e).__name__ }",
+                title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
                 description=f"{ e }"
             )
@@ -149,14 +165,14 @@ class Math(commands.Cog, name='Math'):
     async def calculate(self, ctx, *, numbers):
         try:
             response = (eval(numbers))
-        except requests.exceptions.RequestException as e:
+        except (ValueError, ValueError, ZeroDivisionError, NameError) as e:
             embed = discord.Embed(
-                title=f"Request Error: { type(e).__name__ }",
+                title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
                 description=f"{ e }"
             )
             return await ctx.send(embed=embed)
-                    
+
         embed = discord.Embed(
             title = f"Calculate { numbers }",
             colour = discord.Color.green(),
