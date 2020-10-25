@@ -51,7 +51,7 @@ class Math(commands.Cog, name='Math'):
             for num in numbers[1:]:
                 title = title + " + " + num
             title = title + " ="
-        except (ValueError, ValueError) as e:
+        except (TypeError, ValueError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
@@ -80,7 +80,7 @@ class Math(commands.Cog, name='Math'):
             for num in numbers[1:]:
                 title = title + " - " + num
             title = title + " ="
-        except (ValueError, ValueError) as e:
+        except (TypeError, ValueError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
@@ -111,7 +111,7 @@ class Math(commands.Cog, name='Math'):
             for num in numbers[1:]:
                 title = title + " x " + num
             title = title + " ="
-        except (ValueError, ValueError) as e:
+        except (TypeError, ValueError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
@@ -142,7 +142,7 @@ class Math(commands.Cog, name='Math'):
             for num in numbers[1:]:
                 title = title + " / " + num
             title = title + " ="
-        except (ValueError, ValueError, ZeroDivisionError) as e:
+        except (TypeError, ValueError, ZeroDivisionError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
@@ -165,7 +165,7 @@ class Math(commands.Cog, name='Math'):
     async def calculate(self, ctx, *, numbers):
         try:
             response = (eval(numbers))
-        except (ValueError, ValueError, ZeroDivisionError, NameError) as e:
+        except (TypeError, ValueError, ZeroDivisionError, NameError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
