@@ -70,7 +70,6 @@ class Math(commands.Cog, name='Math'):
     """ Subtract """
     @commands.command(aliases=['minus'])
     @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def subtract(self, ctx, *numbers):
         try:
             array = [float(i) for i in numbers]
@@ -99,7 +98,6 @@ class Math(commands.Cog, name='Math'):
     """ Multiply """
     @commands.command(aliases=['times'])
     @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def multiply(self, ctx, *numbers):
         try:
             array = [float(i) for i in numbers]
@@ -130,7 +128,6 @@ class Math(commands.Cog, name='Math'):
     """ Divide """
     @commands.command(aliases=['division'])
     @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def divide(self, ctx, *numbers):
         try:
             array = [float(i) for i in numbers]
@@ -161,15 +158,32 @@ class Math(commands.Cog, name='Math'):
     """ Calculate """
     @commands.command(aliases=['calc'])
     @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def calculate(self, ctx, *, numbers):
-        try:
-            response = (eval(numbers))
-        except (TypeError, ValueError, ZeroDivisionError, NameError) as e:
+        chars = set('{}[],<>?_!@#$&')
+        if any((c in chars) for c in numbers):
             embed = discord.Embed(
-                title=f"{ type(e).__name__ }",
+                title=f"Error: Prohibited character in calculation.",
                 colour=discord.Color.red(),
-                description=f"{ e }"
+                description=f"Requested calculation contains prohibited characters. Remove non-mathamatical characters and try again."
+            )
+            return await ctx.send(embed=embed)
+        contains = numbers.lower().islower()
+        if contains == False:
+            num = numbers.replace("^","**")
+            try:
+                response = (eval(num, {}, {}))
+            except (TypeError, ValueError, ZeroDivisionError, NameError) as e:
+                embed = discord.Embed(
+                    title=f"{ type(e).__name__ }",
+                    colour=discord.Color.red(),
+                    description=f"{ e }"
+                )
+                return await ctx.send(embed=embed)
+        else:
+            embed = discord.Embed(
+                title=f"Error: Letters in calculation",
+                colour=discord.Color.red(),
+                description=f"Requested calculation contains letters. Remove letters and try again."
             )
             return await ctx.send(embed=embed)
 
