@@ -50,7 +50,6 @@ class Math(commands.Cog, name='Math'):
             title = numbers[0]
             for num in numbers[1:]:
                 title = title + " + " + num
-            title = title + " ="
         except (TypeError, ValueError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
@@ -60,9 +59,9 @@ class Math(commands.Cog, name='Math'):
             return await ctx.send(embed=embed)
 
         embed = discord.Embed(
-            title = f"{ title }",
+            title = f"{ title } =",
             colour = discord.Color.green(),
-            description=(f"""{ response }""")
+            description=(f"{ response }")
         )
 
         return await ctx.send(embed=embed)
@@ -78,7 +77,6 @@ class Math(commands.Cog, name='Math'):
             title = numbers[0]
             for num in numbers[1:]:
                 title = title + " - " + num
-            title = title + " ="
         except (TypeError, ValueError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
@@ -88,9 +86,9 @@ class Math(commands.Cog, name='Math'):
             return await ctx.send(embed=embed)
 
         embed = discord.Embed(
-            title = f"{ title }",
+            title = f"{ title } =",
             colour = discord.Color.green(),
-            description=(f"""{ response }""")
+            description=(f"{ response }")
         )
 
         return await ctx.send(embed=embed)
@@ -108,7 +106,6 @@ class Math(commands.Cog, name='Math'):
             title = numbers[0]
             for num in numbers[1:]:
                 title = title + " x " + num
-            title = title + " ="
         except (TypeError, ValueError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
@@ -118,9 +115,9 @@ class Math(commands.Cog, name='Math'):
             return await ctx.send(embed=embed)
 
         embed = discord.Embed(
-            title = f"{ title }",
+            title = f"{ title } =",
             colour = discord.Color.green(),
-            description=(f"""{ result }""")
+            description=(f"{ result }")
         )
 
         return await ctx.send(embed=embed)
@@ -138,7 +135,6 @@ class Math(commands.Cog, name='Math'):
             title = numbers[0]
             for num in numbers[1:]:
                 title = title + " / " + num
-            title = title + " ="
         except (TypeError, ValueError, ZeroDivisionError) as e:
             embed = discord.Embed(
                 title=f"{ type(e).__name__ }",
@@ -148,9 +144,9 @@ class Math(commands.Cog, name='Math'):
             return await ctx.send(embed=embed)
 
         embed = discord.Embed(
-            title = f"{ title }",
+            title = f"{ title } =",
             colour = discord.Color.green(),
-            description=(f"""{ response }""")
+            description=(f"{ response }")
         )
 
         return await ctx.send(embed=embed)
@@ -159,41 +155,76 @@ class Math(commands.Cog, name='Math'):
     @commands.command(aliases=['calc'])
     @commands.check(check_disabled)
     async def calculate(self, ctx, *, numbers):
-        chars = set('{}[],<>?_!@#$&')
-        if any((c in chars) for c in numbers):
+        chars = set("{}[],<>?_@#\$&")
+        contains = numbers.lower().islower()
+        if any((c in chars) for c in numbers) or (contains == True):
             embed = discord.Embed(
-                title=f"Error: Prohibited character in calculation.",
+                title=f"Error: Prohibited character or letters in calculation.",
                 colour=discord.Color.red(),
-                description=f"Requested calculation contains prohibited characters. Remove non-mathamatical characters and try again."
+                description=f"Requested calculation contains prohibited characters or letters. Remove non-mathamatical characters and try again."
             )
             return await ctx.send(embed=embed)
-        contains = numbers.lower().islower()
-        if contains == False:
-            num = numbers.replace("^","**")
-            try:
-                response = (eval(num, {}, {}))
-            except (TypeError, ValueError, ZeroDivisionError, NameError) as e:
-                embed = discord.Embed(
-                    title=f"{ type(e).__name__ }",
-                    colour=discord.Color.red(),
-                    description=f"{ e }"
-                )
-                return await ctx.send(embed=embed)
-        else:
+
+        num = numbers.replace("^","**")
+        try:
+            response = (eval(num, {}, {}))
+        except (TypeError, ValueError, ZeroDivisionError, NameError, SyntaxError) as e:
             embed = discord.Embed(
-                title=f"Error: Letters in calculation",
+                title=f"{ type(e).__name__ }",
                 colour=discord.Color.red(),
-                description=f"Requested calculation contains letters. Remove letters and try again."
+                description=f"{ e }"
             )
             return await ctx.send(embed=embed)
 
         embed = discord.Embed(
-            title = f"Calculate { numbers }",
+            title = f"{ numbers } =",
             colour = discord.Color.green(),
-            description=(f"""{ response }""")
+            description=(f"{ response }")
         )
 
         return await ctx.send(embed=embed)
+
+    ## Commenting out for now as its computationally heavy and easily abused
+    # """ Factorial """
+    # @commands.command(aliases=['Fac'])
+    # @commands.check(check_disabled)
+    # async def Factorial(self, ctx, *, numbers):
+    #     factorial = 1
+    #     try:
+    #         numbers = int(numbers)
+    #         if int(numbers) < 0:
+    #             embed = discord.Embed(
+    #                 title = f"Negative Number",
+    #                 colour = discord.Color.red(),
+    #                 description=(f"A negative number does not have a factorial")
+    #             )
+    #             return await ctx.send(embed=embed)
+
+    #         if int(numbers) == 0:
+    #             embed = discord.Embed(
+    #                 title = f"{ numbers } =",
+    #                 colour = discord.Color.green(),
+    #                 description=(f"1")
+    #             )
+
+    #             return await ctx.send(embed=embed)
+
+    #         for i in range(1,numbers + 1):
+    #             factorial = factorial*i
+    #     except (ValueError) as e:
+    #         embed = discord.Embed(
+    #             title=f"{ type(e).__name__ }",
+    #             colour=discord.Color.red(),
+    #             description=f"{ e }"
+    #         )
+    #         return await ctx.send(embed=embed)
+
+    #     embed = discord.Embed(
+    #         title = f"{ numbers }! =",
+    #         colour = discord.Color.green(),
+    #         description=(f"{ factorial }")
+    #     )
+    #     return await ctx.send(embed=embed)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
