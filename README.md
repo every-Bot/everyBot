@@ -4,7 +4,7 @@ A completely modular discord bot for all purposes.
 ## Usage
 
 ### Invite Link:
-https://discord.com/api/oauth2/authorize?client_id=602687220058554368&permissions=8&scope=bot
+[Click here to add to your server](https://discord.com/api/oauth2/authorize?client_id=602687220058554368&permissions=8&scope=bot)
 
 ### Installation
 `git clone https://github.com/Givo29/everyBot.git`
