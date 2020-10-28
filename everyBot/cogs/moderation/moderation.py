@@ -3,7 +3,46 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 
 from pymongo.errors import ServerSelectionTimeoutError
-from .. import database
+from everyBot.cogs import database
+
+import psutil
+import asyncio
+import time
+
+async def mute_member(ctx, member: discord.Member, reason: str, time: int):
+    # Try to get muted role from guild
+    role = discord.utils.get(ctx.guild.roles, name="muted")
+
+    # If the role doesn't exist, we need to create it
+    if not role:
+        # Try to create muted role
+        try:
+            role = await ctx.guild.create_role(name="muted", reason="To use for muting bad members")
+            # Remove perms for role to chat in any channel
+            for channel in ctx.guild.channels: 
+                await channel.set_permissions(
+                    role,
+                    send_messages=False
+                )
+        # If the bot can't create the new role
+        except discord.Forbidden as e:
+            raise e
+    
+    # Add muted role to the member, wait the specified amount of time,
+    # then unmute member by removing the role.
+    try:   
+        await member.add_roles(role)
+        embed = discord.Embed(
+            title=f"{ member.display_name } has been muted",
+            colour=discord.Color.green(),
+            description=f"**Time:** { time } minutes\n**Reason:** { reason }"
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        await ctx.send(embed=embed)
+        await asyncio.sleep(time*60)
+        await member.remove_roles(role)
+    except discord.Forbidden as e:
+        raise e
 
 """ Disabled Check """
 async def check_disabled(ctx):
@@ -41,8 +80,39 @@ class Mod(commands.Cog, name="moderation"):
     @commands.check(check_disabled)
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
-    async def warn(self, ctx, member: discord.Member, *, reason):
-        await database.warn_member(member, reason, ctx)
+    async def warn(self, ctx, member: discord.Member, *, reason="None"):
+        # response = await database.warn_member(ctx.guild.id, member.id, reason)
+        response = await database.warn_member(ctx, member, reason)
+        return await ctx.send(embed=response)
+
+    """ Clear member warnings"""
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def clear_warnings(self, ctx, member: discord.Member):
+        fetch_warnings = await database.fetch_member_warnings(ctx.guild.id, member.id, True)
+        warnings = await fetch_warnings.to_list(length=None)
+
+        if not warnings:
+            embed = discord.Embed(
+                title=f"No warnings for { member.display_name }",
+                colour=discord.Color.red(),
+                description=f"{ member.display_name } has no warnings, therefore their warnings cannot be cleared."
+            )
+            embed.set_thumbnail(url=member.avatar_url)
+            return await ctx.send(embed=embed)
+        for warning in warnings:
+            warning.active = False
+            await warning.commit()
+        
+        embed = discord.Embed(
+            title=f"{ member.display_name }'s warnings have been cleared",
+            colour=discord.Color.green(),
+            description=f"All active warnings for { member.display_name } have been cleared.\n\n{ member.mention }, try not to give the mods a reason to give you more ;)"
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        return await ctx.send(embed=embed)
 
     """ Check member warnings """
     @commands.command(aliases=['warnings'])
@@ -52,7 +122,7 @@ class Mod(commands.Cog, name="moderation"):
         if not member:
             member = ctx.author
 
-        fetch_warnings = await database.fetch_member_warnings(member.id, True)
+        fetch_warnings = await database.fetch_member_warnings(ctx.guild.id, member.id, True)
         warnings_list = await fetch_warnings.to_list(length=None)
         embed = discord.Embed(
             title=f"Warnings for { member.display_name }",
@@ -66,9 +136,25 @@ class Mod(commands.Cog, name="moderation"):
             for i, warning in enumerate(warnings_list):
                 warnings.append(f"{ i+1 }: { warning.reason }")
             embed.description="\n".join(warnings)
-
+        embed.set_thumbnail(url=member.avatar_url)
         return await ctx.send(embed=embed)
 
+    """ Mute Member """
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def mute(self, ctx, member: discord.Member, reason: str="None", time: int=5):
+        try:
+            await mute_member(ctx, member, reason, time)
+        except discord.Forbidden as e:
+            embed = discord.Embed(
+                title=f"Failed muting { member.display_name }",
+                colour=discord.Color.red(),
+                description=f"{ ctx.author.display_name }, you do not have the correct permissins to mute { member.display_name }"
+            )
+            return await ctx.send(embed=embed)
 
     """ Kick Member """
     @commands.command()
@@ -87,9 +173,9 @@ class Mod(commands.Cog, name="moderation"):
             await member.kick(reason=reason)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS`** User { member.display_name } has been kicked')
+            return await ctx.send(f'**`SUCCESS`** User { member.display_name } has been kicked')
 
     """ Ban Member """
     @commands.command()
@@ -108,9 +194,9 @@ class Mod(commands.Cog, name="moderation"):
             await member.ban(reason=reason)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** User { member.display_name } has been banned')
+            return await ctx.send(f'**`SUCCESS:`** User { member.display_name } has been banned')
 
     """ Unban Member """
     @commands.command()
@@ -130,9 +216,9 @@ class Mod(commands.Cog, name="moderation"):
             await ctx.guild.unban(user=user, reason=reason)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS: `** User { user.display_name } has been unbanned')
+            return await ctx.send(f'**`SUCCESS: `** User { user.display_name } has been unbanned')
         
     """ Add Role """
     @commands.command(aliases=['setrole', 'ar', 'sr'])
@@ -148,9 +234,9 @@ class Mod(commands.Cog, name="moderation"):
             await member.add_roles(role)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** role { role.name } added to { member.display_name }')
+            return await ctx.send(f'**`SUCCESS:`** role { role.name } added to { member.display_name }')
 
     """ Remove Role """
     @commands.command(aliases=['rmrole', 'rr'])
@@ -166,14 +252,47 @@ class Mod(commands.Cog, name="moderation"):
             await member.remove_roles(role)
         except Exception as e:
             # Handle errors if any
-            await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
-            await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
+            return await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
+
+    """ System Status """
+    @commands.command(aliases=['system','host'])
+    @commands.check(check_disabled)
+    @commands.guild_only()
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    async def systemstatus(self, ctx):
+        info={}
+        info['ram']=psutil.virtual_memory().percent
+        info['cpu']=psutil.cpu_percent()
+        info['uptime']=time.time() - psutil.boot_time()
+
+        embed=discord.Embed(
+            title = "System Status", 
+            description = "Bot Host System Status", 
+            color = discord.Color.green()
+        )
+        if ((info['ram'] > 90) or (info['cpu'] > 90)):
+            embed.color =  discord.Color.red()
+        elif ((info['ram'] > 75) or (info['cpu'] > 75)):
+            embed.color =  discord.Color.orange()
+
+        embed.add_field(name="Uptime", value=str(round(info['uptime']/60/60,2))+" Hours", inline=True)
+        embed.add_field(name="Memory", value=str(info['ram'])+"%", inline=True)
+        embed.add_field(name="CPU", value=str(info['cpu'])+"%", inline=True)
+        
+
+        return await ctx.send(embed=embed)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
-        # Handling any errors within commands
-        await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
+        # Handling any errors within command
+        embed = discord.Embed(
+            title=f"Error in { ctx.command.qualified_name }",
+            colour=discord.Color.red(),
+            description=f"{ error }"
+        )
+        return await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(Mod(bot))
