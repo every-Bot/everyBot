@@ -21,7 +21,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Math(commands.Cog, name='Math'):
+class math(commands.Cog, name='math'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -234,4 +234,4 @@ class Math(commands.Cog, name='Math'):
         return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
-    bot.add_cog(Math(bot))
+    bot.add_cog(math(bot))
