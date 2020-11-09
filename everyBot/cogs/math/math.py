@@ -234,4 +234,4 @@ class Math(commands.Cog, name='math'):
         return await ctx.send(f'Error in { ctx.command.qualified_name }: { error }')
 
 def setup(bot):
-    bot.add_cog(math(bot))
+    bot.add_cog(Math(bot))
