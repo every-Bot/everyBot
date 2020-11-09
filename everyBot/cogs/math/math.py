@@ -21,7 +21,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class math(commands.Cog, name='math'):
+class Math(commands.Cog, name='math'):
     def __init__(self, bot):
         self.bot = bot
 
