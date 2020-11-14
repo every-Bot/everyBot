@@ -24,7 +24,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Fun(commands.Cog, name='Fun'):
+class Fun(commands.Cog, name='fun'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -276,6 +276,30 @@ class Fun(commands.Cog, name='Fun'):
 
         return await ctx.send(embed=embed)
 
+    """ Wink At Member """
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+    async def wink(self, ctx, member: discord.Member):
+        # Make Request
+        try:
+            res = requests.get("https://some-random-api.ml/animu/wink")
+            gif = res.json()["link"]
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title="Wink",
+            description=member.mention
+        )
+        embed.set_image(url=gif)
+
+        return await ctx.send(embed=embed)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
