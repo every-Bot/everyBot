@@ -234,15 +234,17 @@ class Animals(commands.Cog, name='animals'):
         return await ctx.send(embed=embed)
 
     """ Animal Fact """
-    @commands.command()
+    @commands.command(usage="[dog|cat|panda|fox|red_panda|koala|bird|racoon|kangaroo]")
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def animal_fact(self, ctx, animal: str):
-        animal_list = ["dog", "cat", "panda", "fox", "red_panda", "koala", "birb", "racoon", "kangaroo"]
+
+        # Get a list of all valid animals from command usage
+        usage = ctx.command.usage[1:-1].split("|")
 
         # Ensure given animal is in list of accepted animals
-        if animal not in animal_list:
-            animals = ", ".join(animal_list)
+        if animal not in usage:
+            animals = ", ".join(usage)
             embed = discord.Embed(
                 title="Amimal Fact",
                 colour=discord.Color.red(),
@@ -250,7 +252,7 @@ class Animals(commands.Cog, name='animals'):
             )
             return await ctx.send(embed=embed)
 
-        # Make request
+        # Make API request
         url = f"https://some-random-api.ml/animal/{ animal }"
         try:
             res = requests.get(url)
