@@ -39,7 +39,11 @@ class Math(commands.Cog, name='math'):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Add """
-    @commands.command(aliases=['addition'])
+    @commands.command(
+        aliases=['addition'],
+        usage="[numbers]",
+        description="Add some numbers together"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def add(self, ctx, *numbers):
@@ -67,7 +71,11 @@ class Math(commands.Cog, name='math'):
         return await ctx.send(embed=embed)
     
     """ Subtract """
-    @commands.command(aliases=['minus'])
+    @commands.command(
+        aliases=['minus'],
+        usage="[numbers]",
+        description="Subtract some numbers"
+    )
     @commands.check(check_disabled)
     async def subtract(self, ctx, *numbers):
         try:
@@ -94,7 +102,11 @@ class Math(commands.Cog, name='math'):
         return await ctx.send(embed=embed)
 
     """ Multiply """
-    @commands.command(aliases=['times'])
+    @commands.command(
+        aliases=['times'],
+        usage="[numbers]",
+        description="Multiply some numbers"
+    )
     @commands.check(check_disabled)
     async def multiply(self, ctx, *numbers):
         try:
@@ -123,7 +135,11 @@ class Math(commands.Cog, name='math'):
         return await ctx.send(embed=embed)
 
     """ Divide """
-    @commands.command(aliases=['division'])
+    @commands.command(
+        aliases=['division'],
+        usage="[numbers]",
+        description="Divide some numbers"
+    )
     @commands.check(check_disabled)
     async def divide(self, ctx, *numbers):
         try:
@@ -152,7 +168,11 @@ class Math(commands.Cog, name='math'):
         return await ctx.send(embed=embed)
 
     """ Calculate """
-    @commands.command(aliases=['calc'])
+    @commands.command(
+        aliases=['calc'],
+        usage="[equation]",
+        description="Run a calculation"
+    )
     @commands.check(check_disabled)
     async def calculate(self, ctx, *, numbers):
         chars = set("{}[],<>?_@#\$&")

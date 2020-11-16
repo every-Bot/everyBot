@@ -76,7 +76,10 @@ class Mod(commands.Cog, name="moderation"):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Warn member """
-    @commands.command()
+    @commands.command(
+        usage="[member] (optional reason)",
+        description="Warns a member"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
@@ -86,7 +89,10 @@ class Mod(commands.Cog, name="moderation"):
         return await ctx.send(embed=response)
 
     """ Clear member warnings"""
-    @commands.command()
+    @commands.command(
+        usage="[member]",
+        description="Clears a member's warnings"
+    )
     @commands.check(check_disabled)
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
@@ -115,10 +121,13 @@ class Mod(commands.Cog, name="moderation"):
         return await ctx.send(embed=embed)
 
     """ Check member warnings """
-    @commands.command(aliases=['warnings'])
+    @commands.command(
+        usage="(optional member)",
+        description="Check warnings of a member"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
-    async def check_warnings(self, ctx, member: discord.Member=None):
+    async def warnings(self, ctx, member: discord.Member=None):
         if not member:
             member = ctx.author
 
@@ -140,7 +149,10 @@ class Mod(commands.Cog, name="moderation"):
         return await ctx.send(embed=embed)
 
     """ Mute Member """
-    @commands.command()
+    @commands.command(
+        usage="[member] (optional reason) (optional time)",
+        description="Mutes a member"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_permissions(kick_members=True)
@@ -157,12 +169,15 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(embed=embed)
 
     """ Kick Member """
-    @commands.command()
+    @commands.command(
+        usage="[member] (optional reason)",
+        description="Kicks a member"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
-    async def kick(self, ctx, member: discord.Member=None, *reason):
+    async def kick(self, ctx, member: discord.Member, *reason):
         if reason:
             reason = ' '.join(reason)
         else:
@@ -178,12 +193,15 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`SUCCESS`** User { member.display_name } has been kicked')
 
     """ Ban Member """
-    @commands.command()
+    @commands.command(
+        usage="[member] (optional reason)",
+        description="Bans a member"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_permissions(ban_members=True)
     @commands.guild_only()
-    async def ban(self, ctx, member: discord.Member=None, *reason):
+    async def ban(self, ctx, member: discord.Member, *reason):
         if reason:
             reason = ' '.join(reason)
         else:
@@ -199,12 +217,15 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`SUCCESS:`** User { member.display_name } has been banned')
 
     """ Unban Member """
-    @commands.command()
+    @commands.command(
+        usage="[member_id] (optional reason)",
+        description="Unbans a member"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(ban_members=True)
     @commands.has_permissions(ban_members=True)
     @commands.guild_only()
-    async def unban(self, ctx, member: int=None, *reason):
+    async def unban(self, ctx, member: int, *reason):
         if reason:
             reason = ' '.join(reason)
         else:
@@ -221,7 +242,11 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`SUCCESS: `** User { user.display_name } has been unbanned')
         
     """ Add Role """
-    @commands.command(aliases=['setrole', 'ar', 'sr'])
+    @commands.command(
+        aliases=['setrole'],
+        usage="(optional member) [role]",
+        description="Adds role to member"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_permissions(manage_roles=True)
@@ -239,7 +264,11 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`SUCCESS:`** role { role.name } added to { member.display_name }')
 
     """ Remove Role """
-    @commands.command(aliases=['rmrole', 'rr'])
+    @commands.command(
+        aliases=['rmrole'],
+        usage="(optional member) [role]",
+        description="Removes role to member"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_roles=True)
     @commands.has_permissions(manage_roles=True)
@@ -257,7 +286,10 @@ class Mod(commands.Cog, name="moderation"):
             return await ctx.send(f'**`SUCCESS:`** role { role.name } removed from { member.display_name }')
 
     """ System Status """
-    @commands.command(aliases=['system','host'])
+    @commands.command(
+        aliases=['system','host'],
+        description="Checks status of bot server host"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)

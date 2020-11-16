@@ -18,7 +18,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Members(commands.Cog):
+class Members(commands.Cog, name="members"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -36,13 +36,17 @@ class Members(commands.Cog):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Register new member into the database """
-    @commands.command()
+    @commands.command(
+        description="Register yourself in the bot"
+    )
     @commands.guild_only()
     async def register(self, ctx):
         await database.register_member(ctx.author, ctx)
 
     """ Display profile """
-    @commands.command()
+    @commands.command(
+        description="Display your bot profile"
+    )
     async def profile(self, ctx):
         member = await database.fetch_member(ctx.author)
         fetch_warnings = await database.fetch_member_warnings(ctx.author.id, True)
@@ -72,14 +76,11 @@ class Members(commands.Cog):
         
         return await ctx.send(embed=embed)
 
-    @commands.command()
-    @commands.guild_only()
-    async def removeMember(self, ctx, member: discord.Member):
-        await database.remove_member(member)
-        # return await ctx.send(response)
-
     """ Check when the mentioned user joined the server """
-    @commands.command()
+    @commands.command(
+        usage="(optional member)",
+        description="Check when a member joined the server"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
     async def joined(self, ctx, *, member: discord.Member=None):
@@ -89,10 +90,14 @@ class Members(commands.Cog):
         return await ctx.send(f'{ member.display_name } has joined on { member.joined_at }')
 
     """ Check top server role of the user """
-    @commands.command(name='top_role', aliases=['toprole'])
+    @commands.command(
+        aliases=['tr'],
+        usage="(optional member)",
+        description="Check top role of a member"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
-    async def show_toprole(self, ctx, *, member: discord.Member=None):
+    async def toprole(self, ctx, *, member: discord.Member=None):
         # If no member is mentioned, assume author
         if member is None:
             member = ctx.author
@@ -100,10 +105,14 @@ class Members(commands.Cog):
         return await ctx.send(f'The top role for {member.display_name} is {member.top_role.name}')
 
     """ Check all perms of mentioned user """
-    @commands.command(name='perms', aliases=['perms_for', 'permissions'])
+    @commands.command( 
+        aliases=['perms_for', 'perms'],
+        usage="(optional member)",
+        description="Check all permissions of a member"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
-    async def check_permissions(self, ctx, *, member: discord.Member=None):
+    async def permissions(self, ctx, *, member: discord.Member=None):
         # If no member is mentioned, assume author
         if member is None:
             member = ctx.author
@@ -119,11 +128,15 @@ class Members(commands.Cog):
         return await ctx.send(content=None, embed=embed)
 
     """ Set A User's nickname """
-    @commands.command(aliases=['nick'])
+    @commands.command(
+        aliases=['nick'],
+        usage="[nickname] (optional member)",
+        description="Set a members nickname"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_nicknames=True)
     @commands.has_permissions(manage_nicknames=True)
-    async def nickname(self, ctx, member: discord.Member=None, *nickname):
+    async def nickname(self, ctx, *nickname, member: discord.Member=None,):
         # Checking user permissions
         if member != ctx.author and member.top_role >= ctx.author.top_role:
             return await ctx.send(f'**`ERROR:`** You do not have high enough permissions to change { member.display_name }\'s role.')

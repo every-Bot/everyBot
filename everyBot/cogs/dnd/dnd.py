@@ -40,7 +40,10 @@ class DnD(commands.Cog, name='dnd'):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Rollto """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="roll a d20 to foresee your fate"
+    )
     @commands.check(check_disabled)
     async def rollto(self, ctx, *, text):
         embed = discord.Embed(

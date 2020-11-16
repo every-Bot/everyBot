@@ -15,7 +15,9 @@ class Modules(commands.Cog, name='modules'):
         self.bot = bot
 
     """ List all available modules """
-    @commands.command()
+    @commands.command(
+        description="Lists all available modules"
+    )
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def list_modules(self, ctx):
@@ -71,7 +73,10 @@ class Modules(commands.Cog, name='modules'):
                 pass
 
     """ Add module to bot """
-    @commands.command()
+    @commands.command(
+        usage="[module]",
+        description="Enable a module for your server"
+    )
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def install_module(self, ctx, *, cog: str):
@@ -118,7 +123,10 @@ class Modules(commands.Cog, name='modules'):
         return await ctx.send(embed=embed)
 
     """ Remove module from bot """
-    @commands.command()
+    @commands.command(
+        usage="[module]",
+        description="Disable a module for your server"
+    )
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def remove_module(self, ctx, *, cog: str):
@@ -158,7 +166,9 @@ class Modules(commands.Cog, name='modules'):
         return await ctx.send(embed=embed)
 
     """ List Installed Modules """
-    @commands.command()
+    @commands.command(
+        description="List modules installed on your server"
+    )
     @commands.guild_only()
     async def installed_modules(self, ctx):
         try:
@@ -190,7 +200,10 @@ class Modules(commands.Cog, name='modules'):
         return await ctx.send(embed=embed)
 
     """ Reload Module """
-    @commands.command(aliases=['reload'])
+    @commands.command(
+        usage="[module]",
+        description="Reload a module"
+    )
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def reload_module(self, ctx, *, cog: str):
@@ -208,7 +221,11 @@ class Modules(commands.Cog, name='modules'):
             return await ctx.send(f'**`SUCCESS:`** The `{ cog }` module was reloaded')
 
     """ Disable Command """
-    @commands.command(aliases=['remove_command'])
+    @commands.command(
+        aliases=['remove_command'],
+        usage="[command]",
+        description="Disable a command for your server"
+    )
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def disable_command(self, ctx, *, command: str):
@@ -246,7 +263,11 @@ class Modules(commands.Cog, name='modules'):
         return await ctx.send(embed=embed)
 
     """ Enable Command """
-    @commands.command(aliases=['add_command'])
+    @commands.command(
+        aliases=['add_command'],
+        usage="[command]",
+        description="Disable a command for your server"
+    )
     @has_permissions(administrator=True)
     @commands.guild_only()
     async def enable_command(self, ctx, *, command: str):
@@ -278,7 +299,8 @@ class Modules(commands.Cog, name='modules'):
     """ List Disabled Commands """
     @commands.command(
         name='disabled_commands',
-        aliases=['disabled', 'list_disabled']
+        aliases=['disabled', 'list_disabled'],
+        description="List all disabled commands for your server"
     )
     @commands.guild_only()
     async def list_disabled_commands(self, ctx):
