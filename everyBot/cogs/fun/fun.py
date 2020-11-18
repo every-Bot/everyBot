@@ -276,6 +276,39 @@ class Fun(commands.Cog, name='Fun'):
 
         return await ctx.send(embed=embed)
 
+    """ Weather """
+    @commands.command()
+    @commands.check(check_disabled)
+    async def weather(self, ctx, *location):
+        try:
+            location = ' '.join(location)
+            chars = set("{}[]<>?_@#\$&")
+            if any((c in chars) for c in location):
+                embed = discord.Embed(
+                    title=f"Error: Prohibited character(s) in string.",
+                    colour=discord.Color.red(),
+                    description=f"Request contains prohibited characters. Remove non-alphabetical characters and try again."
+                )
+                return await ctx.send(embed=embed)
+
+            loc = (location.replace(" ", "+")).replace(",", "+")
+            response = requests.get('http://wttr.in/'+loc+'?format=%c+%C+%t+%w').text
+
+        except Exception as e:
+            embed = discord.Embed(
+                title=f"{ type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title = f"{ location.capitalize() }",
+            colour = discord.Color.green(),
+            description=(f"{ response }")
+        )
+        return await ctx.send(embed=embed)
+
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
