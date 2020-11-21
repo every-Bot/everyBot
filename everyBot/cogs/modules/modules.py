@@ -62,7 +62,7 @@ class Modules(commands.Cog, name='modules'):
                     page = 0
                 if reaction.emoji == '\u25c0' and page > 0:
                     page -= 1
-                if reaction.emoji == '\u25b6' and page < len(pages):
+                if reaction.emoji == '\u25b6' and page < page_amount-1:
                     page += 1
                 if reaction.emoji == '\u23ed':
                     page = len(pages) - 1
