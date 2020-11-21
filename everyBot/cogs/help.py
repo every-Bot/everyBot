@@ -37,7 +37,13 @@ class Help(commands.Cog, name="help"):
             return await ctx.send(embed=embed)
 
         if module not in modules:
-            return
+            embed = discord.Embed(
+                title=f"No module { module }",
+                colour=discord.Colour.red(),
+                description=f"The module `{ module }` does not exist or is not installed.\nSee `$list_modules` for a list of installable modules"
+            )
+            embed.set_thumbnail(url=ctx.me.avatar_url)
+            return await ctx.send(embed=embed)
 
         disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
         cog = self.bot.get_cog(module)
