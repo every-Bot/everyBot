@@ -13,6 +13,7 @@ class Help(commands.Cog, name="help"):
         try:
             installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
             modules = installed_modules + self.bot.base_cogs
+            modules = sorted(modules)
         except ServerSelectionTimeoutError as e:
             embed = discord.Embed(
                 title=f"Error listing installed modules: { type(e).__name__ }",
@@ -38,14 +39,18 @@ class Help(commands.Cog, name="help"):
         if module not in modules:
             return
 
+        disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
         cog = self.bot.get_cog(module)
         commands = cog.get_commands()
+
         embed = discord.Embed(
             title=f"{ cog.qualified_name.capitalize() } Module",
             colour=discord.Color.blue()
         )
         embed.set_thumbnail(url=ctx.me.avatar_url)
         for command in commands:
+            if command.name in disabled_commands:
+                continue
             if command.usage:
                 embed.add_field(name=f"`{ ctx.prefix }{ command.name } { command.usage }`", value=command.description, inline=False)
             else:
