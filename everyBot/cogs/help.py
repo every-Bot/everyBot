@@ -31,7 +31,7 @@ class Help(commands.Cog, name="help"):
                 cog = self.bot.get_cog(module)
                 if cog is not None:
                     if not cog.__cog_settings__ or not cog.__cog_settings__['hidden']:
-                        embed.add_field(name=module, value=f"{ ctx.prefix }help { module }", inline=False)
+                        embed.add_field(name=module, value=f"`{ ctx.prefix }help { module }`", inline=False)
                 
             return await ctx.send(embed=embed)
 
