@@ -277,7 +277,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ Weather """
-    @commands.command()
+    @commands.command(
+        usage="[location]",
+        description="Check the current weather"   
+    )
     @commands.check(check_disabled)
     async def weather(self, ctx, *location):
         try:
