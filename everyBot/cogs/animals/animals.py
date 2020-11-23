@@ -52,7 +52,10 @@ class Animals(commands.Cog, name='animals'):
 
 
     """ Cats """
-    @commands.command(aliases=['kitten', 'kitty'])
+    @commands.command(
+        aliases=['kitten', 'kitty'],
+        description="I taut i taw a puddy-tat"   
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
@@ -69,7 +72,10 @@ class Animals(commands.Cog, name='animals'):
         return await ctx.send(response['file'])
 
     """ Sad Cat """
-    @commands.command(aliases=['sadkitty'])
+    @commands.command(
+        aliases=['sadkitty'],
+        description="Very sad kitty"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def sadcat(self, ctx):
@@ -86,7 +92,10 @@ class Animals(commands.Cog, name='animals'):
         return await ctx.send(response['file'])
 
     """ Dogs """
-    @commands.command(aliases=['doggo', 'puppy', 'pupper', 'woofer'])
+    @commands.command(
+        aliases=['doggo', 'puppy', 'pupper', 'woofer'],
+        description="Man's best friend"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
@@ -103,7 +112,10 @@ class Animals(commands.Cog, name='animals'):
         return await ctx.send(response['file'])
 
     """ Birds """
-    @commands.command(aliases=['birb', 'birdy'])
+    @commands.command(
+        aliases=['birb', 'birdy'],
+        description="Tweet tweet"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def bird(self, ctx):
@@ -120,7 +132,10 @@ class Animals(commands.Cog, name='animals'):
         return await ctx.send(response['file'])
 
     """ Duck """
-    @commands.command(aliases=['ducky', 'duckling'])
+    @commands.command(
+        aliases=['ducky', 'duckling'],
+        description="Daffy?"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def duck(self, ctx):

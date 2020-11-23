@@ -23,7 +23,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Template(commands.Cog, name="Template"):
+class Template(commands.Cog, name="template"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -41,7 +41,11 @@ class Template(commands.Cog, name="Template"):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Example Command """
-    @commands.command(aliases=['ex', 'eg'])
+    @commands.command(
+        aliases=['ex', 'eg'],
+        usage="[text]",
+        description="A simple example module"
+    )
     @commands.check(check_disabled)
     async def example(self, ctx, *, text):
         return await ctx.send(f"These aren't the droids you're looking for. You said { text }.")

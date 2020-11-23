@@ -3,26 +3,27 @@ from discord.ext import commands
 
 import sys
 
-class Owner(commands.Cog, name='Owner'):
+attrs = {
+    'hidden': True
+}
+
+class Owner(commands.Cog, name='owner', command_attrs=attrs):
     def __init__(self, bot):
         self.bot = bot
 
     """ Shutdown Bot """
-    @commands.command(name='shutdown', aliases=['quit'])
+    @commands.command(
+        description="Shuts down the bot"
+    )
     async def shutdown(self, ctx):
         await ctx.send('**`Shutting Down`** Goodbye.')
         await self.bot.logout()
-        sys.exit(0)
-
-    """ Restart Bot """
-    @commands.command(name='restart', aliases=['reboot'])
-    async def restart(self, ctx):
-        await ctx.send('**`Rebooting`**')
-        await self.bot.logout()
-        sys.exit(6)
 
     """ Change Bot Activity """
-    @commands.command(name='activity', aliases=['change_activity'])
+    @commands.command(
+        usage="[type] [value]",
+        description="Change the activity of the bot"
+    )
     async def activity(self, ctx, type: str, *, name: str):
         # Checking which activity type was specified
         type = type.lower()
@@ -44,7 +45,10 @@ class Owner(commands.Cog, name='Owner'):
         return await ctx.send(f'**`Success:`** bot activity has been changed')
 
     """ Change Bot Status """
-    @commands.command(name='status')
+    @commands.command(
+        usage="[invisible|idle|dnd]",
+        description="Change the status of the bot"
+    )
     async def status(self, ctx, status: str):
         # Check which status was specified
         status = status.lower()
