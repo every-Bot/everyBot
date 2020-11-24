@@ -18,7 +18,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Text(commands.Cog, name="Text"):
+class Text(commands.Cog, name="text"):
     def __init__(self, bot):
         self.bot = bot
 
