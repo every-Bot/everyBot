@@ -50,11 +50,12 @@ class Help(commands.Cog, name="help"):
 
             return await ctx.send(embed=embed)
 
-        modules_per_page = 5
-        page_amount = math.ceil(len(modules) / modules_per_page)
-        pages = []
+        commands_per_page = 5
         cog = self.bot.get_cog(module)
         commands = cog.get_commands()
+        page_amount = math.ceil(len(commands) / commands_per_page)
+        pages = []
+
         for x in range(page_amount):
             rows = 0
             page = discord.Embed(
@@ -63,7 +64,7 @@ class Help(commands.Cog, name="help"):
             page.set_thumbnail(url=ctx.me.avatar_url)
 
             # Creating pages
-            while rows < modules_per_page:
+            while rows < commands_per_page:
                 field_prefix = ""
                 if rows > 0:
                     field_prefix = "\u200b\n"
@@ -111,23 +112,6 @@ class Help(commands.Cog, name="help"):
                 await message.edit(embed=pages[page])
             except asyncio.TimeoutError:
                 pass
-
-
-
-
-        # embed = discord.Embed(
-        #     title=f"{ cog.qualified_name.capitalize() } Module",
-        #     colour=discord.Color.blue()
-        # )
-        # embed.set_thumbnail(url=ctx.me.avatar_url)
-        # for command in commands:
-        #     if command.name in disabled_commands:
-        #         continue
-        #     if command.usage:
-        #         embed.add_field(name=f"`{ ctx.prefix }{ command.name } { command.usage }`", value=command.description, inline=False)
-        #     else:
-        #         embed.add_field(name=f"`{ ctx.prefix }{ command.name }`", value=command.description, inline=False)
-        # return await ctx.send(embed=embed)
 
 
 def setup(bot):
