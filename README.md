@@ -7,9 +7,9 @@ A completely modular and centralised discord bot for all purposes.
 
 ## Vision
 
-This bot aims to go where no discord bot has gone before - To create a community driven, completely modular and fully centralised discord bot. Bots such as [mee6](https://mee6.xyz/), which while being modular and centralised, is not community driven - only having a limited amount of modules available for use, and [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot) bot, a fully modular bot that allows you to create your own cogs, but is self host only, are what everyBot aims to better.
+This bot aims to go where no discord bot has gone before - To create a community driven, completely modular and fully centralised discord bot. [mee6](https://mee6.xyz/) is a bot which while being modular and centralised, is not community driven - only having a limited amount of modules available for use, and [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot) bot, a fully modular bot that allows you to create your own cogs, but is self host only. 
 
-everyBot aims to solve this by being a fully centralised and fully modular format, encouraging community members to create their own modules for all to use, without the restriction of everyone having to setup and host the bot themselves. 
+everyBot intends to better these bots by combining the best parts of both: Modular, Community driven, and fully hosted and managed by us, encouraging community members to create their own modules for all to use, without the restriction of everyone having to setup and host the bot themselves. 
 
 ## How To Contribute
 As of writing this document, there is no way to easily create modules for the bot, but that is coming soon in the form of a docker image.
