@@ -17,7 +17,7 @@ The [mee6](https://mee6.xyz/) bot is both modular and centralised. But not commu
 
 [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot) bot is fully modular and allows you to create your own cogs, but is self hosted only. 
 
-*everyBot* intends to create something new. By combining the best parts (Community driven, Modular and Centralised) and encouraging community members to create and maintain their own modules, for all to use, without the restriction of everyone having to setup and host the bot themselves. 
+*everyBot* intends to create something new. By combining the best parts (Community driven, Modular and fully hosted by us) and encouraging community members to create and maintain their own modules, for all to use, without the restriction of everyone having to setup and host the bot themselves. 
 
 ## How To Contribute
 At this moment there is no way to easily create new modules for the bot, but that is coming soon in the form of a contributing guide and docker image.
