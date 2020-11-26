@@ -3,16 +3,26 @@
 A completely modular and centralised discord bot for all purposes.
 
 ## Invite Link:
-[Click here to add to your server](https://discord.com/api/oauth2/authorize?client_id=602687220058554368&permissions=8&scope=bot)
+[Click here to invite *everyBot* to your server](https://discord.com/api/oauth2/authorize?client_id=602687220058554368&permissions=8&scope=bot)
 
 ## Vision
 
-This bot aims to go where no discord bot has gone before - To create a community driven, completely modular and fully centralised discord bot. [mee6](https://mee6.xyz/) is a bot which while being modular and centralised, is not community driven - only having a limited amount of modules available for use, and [Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot) bot, a fully modular bot that allows you to create your own cogs, but is self host only. 
+*everybot* aims to go where no discord bot has gone before
 
-everyBot intends to improve upon these bots by combining the best parts of both: Modular, Community driven, and fully hosted and managed by us, encouraging community members to create and maintain their own modules for all to use, without the restriction of everyone having to setup and host the bot themselves. 
+To create a **community driven**, completely **modular** and fully **centralised** discord bot. 
+
+## So why a new bot?
+
+The [mee6](https://mee6.xyz/) bot is both modular and centralised. But not community driven - only having a limited amount of modules available for use
+
+[Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot) bot is fully modular and allows you to create your own cogs, but is self hosted only. 
+
+*everyBot* intends to create something new. By combining the best parts (Community driven, Modular and Centralised) and encouraging community members to create and maintain their own modules, for all to use, without the restriction of everyone having to setup and host the bot themselves. 
 
 ## How To Contribute
-As of writing this document, there is no way to easily create modules for the bot, but that is coming soon in the form of a docker image.
+At this moment there is no way to easily create new modules for the bot, but that is coming soon in the form of a contributing guide and docker image.
 
-### Is it functional?
-Yes! everyBot is completely functional and ready to be used in your servers. All you have to do is click the link above to add it to your server.
+The best way to help at this time is to invite the bot to your Discord server and start using it! Submitting bugs or feedback via a Github issue is the best way to contribute to the project.
+
+## Is it functional?
+Yes! everyBot is completely functional and ready to be used in your servers. All you have to do is click the link above to add it to your Discord server.
