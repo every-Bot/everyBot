@@ -18,7 +18,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Text(commands.Cog, name="Text"):
+class Text(commands.Cog, name="text"):
     def __init__(self, bot):
         self.bot = bot
 
@@ -36,14 +36,20 @@ class Text(commands.Cog, name="Text"):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Say """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="The bot said it, not me"
+    )
     @commands.check(check_disabled)
     async def say(self, ctx, *text):
         await ctx.message.delete()
         return await ctx.send(" ".join(text))
 
     """ Mock """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="MoCk SoMeThInG SoMe MoWoN SaId"
+    )
     @commands.check(check_disabled)
     async def mock(self, ctx, *, text):
         mock_text = list(text)
@@ -54,7 +60,10 @@ class Text(commands.Cog, name="Text"):
         return await ctx.send(f"{ ''.join(mock_text) }")
 
     """ Clap """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="Say :clap: something :clap: powerfully :clap:"
+    )
     @commands.check(check_disabled)
     async def clap(self, ctx, *text):
         return await ctx.send(f"{ ' :clap: '.join(text) } :clap:")

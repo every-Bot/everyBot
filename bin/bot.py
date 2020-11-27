@@ -28,27 +28,28 @@ def get_secret(secret):
 
 # modules
 modules = [
-    'everyBot.cogs.help.help',
+    'everyBot.cogs.help',
     'everyBot.cogs.text.text',
     'everyBot.cogs.members.members',
     'everyBot.cogs.modules.modules',
     'everyBot.cogs.owner.owner',
     'everyBot.cogs.moderation.moderation',
-    'everyBot.cogs.module_bot.module_bot',
     'everyBot.cogs.fun.fun',
     'everyBot.cogs.animals.animals',
     'everyBot.cogs.random_compliment.random_compliment',
     'everyBot.cogs.dnd.dnd',
-    'everyBot.cogs.template.template'
+    'everyBot.cogs.template.template',
+    'everyBot.cogs.math.math'
     ]
 
 bot = commands.Bot(
     command_prefix=get_prefix,
     owner_id=get_secret("ownerId"),
-    case_insensitive=True
+    case_insensitive=True,
+    help_command=None
 )
 bot.disabled_commands = []
-bot.base_cogs = ['modules', 'owner', 'module_bot']
+bot.base_cogs = ['modules', 'owner']
 
 if __name__ == '__main__':
     for module in modules:

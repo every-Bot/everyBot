@@ -24,7 +24,7 @@ async def check_disabled(ctx):
 
     return ctx.command.name not in disabled_commands
 
-class Fun(commands.Cog, name='Fun'):
+class Fun(commands.Cog, name='fun'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -42,7 +42,11 @@ class Fun(commands.Cog, name='Fun'):
         return ctx.command.cog_name.lower() in installed_modules
 
     """ Eight Ball """
-    @commands.command(aliases=['eight', '8ball'])
+    @commands.command(
+        aliases=['eight', '8ball'],
+        usage="[question]",
+        description="Test your fate with the eight ball"
+    )
     @commands.check(check_disabled)
     async def eightball(self, ctx, *, question: commands.clean_content):
         # Define all 8ball responses and pick random choice
@@ -54,7 +58,7 @@ class Fun(commands.Cog, name='Fun'):
         ])      
         
         embed = discord.Embed(
-            title = f"8ball { question }",
+            title = f"eightball '{ question }'",
             colour = discord.Color.green(),
             description=(f"""{ response }""")
         )
@@ -62,7 +66,9 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ FML """
-    @commands.command()
+    @commands.command(
+        description="Find someone who's life is worse than yours"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def fml(self, ctx):
@@ -85,7 +91,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ Dad Joke """
-    @commands.command(aliases=['dad', 'dad-joke'])
+    @commands.command(
+        aliases=['dad', 'dad-joke'],
+        description="Clearly the best type of joke"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def dadjoke(self, ctx):
@@ -111,7 +120,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ Compliment User """
-    @commands.command()
+    @commands.command(
+        usage="[member]",
+        description="Compliment your favourite discord user"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def compliment(self, ctx, member: discord.Member):
@@ -134,7 +146,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ Insult User """
-    @commands.command()
+    @commands.command(
+        usage="[member]",
+        description="Roast an unsuspecting user"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def insult(self, ctx, member: discord.Member):
@@ -158,7 +173,11 @@ class Fun(commands.Cog, name='Fun'):
 
 
     """ Achievement Get """
-    @commands.command(aliases=['achievement-get', 'achievementget'])
+    @commands.command(
+        aliases=['achievement-get', 'achievementget'],
+        usage="[text]",
+        description="Get an achievement"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def achievement(self, ctx, *, text):
@@ -166,7 +185,11 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(f'https://api.alexflipnote.dev/achievement?text={ text }')
 
     """ Truth Scroll """
-    @commands.command(aliases=['truthscroll', 'truth-scroll'])
+    @commands.command(
+        aliases=['truthscroll', 'truth-scroll'],
+        usage="[text]",
+        description="Tell an ultimate truth"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def scroll(self, ctx, *, text):
@@ -174,7 +197,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(f'https://api.alexflipnote.dev/scroll?text={ text }') 
 
     """ Supreme """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="Text in the supreme logo"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def supreme(self, ctx, *, text):
@@ -182,7 +208,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(f'https://api.alexflipnote.dev/supreme?text={ text }')
 
     """ Facts """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="Hit everyone with straight fact"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def facts(self, ctx, *, text):
@@ -190,7 +219,9 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(f'https://api.alexflipnote.dev/facts?text={ text }')
         
     """ Trump Quote """
-    @commands.command()
+    @commands.command(
+        description="Random quote from everyone's favourite president"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def trump(self, ctx):
@@ -213,7 +244,9 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ Roulette """
-    @commands.command()
+    @commands.command(
+        description="Test your luck"
+    )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(kick_members=True)
     @commands.cooldown(rate=1, per=1800, type=commands.BucketType.user)
@@ -245,7 +278,10 @@ class Fun(commands.Cog, name='Fun'):
         return await ctx.send(embed=embed)
 
     """ Urban Dictionary """
-    @commands.command()
+    @commands.command(
+        usage="[text]",
+        description="Search anything in urban dictionary"
+    )
     @commands.check(check_disabled)
     async def urban(self, ctx, *text):
         # Getting definition from api
