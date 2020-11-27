@@ -1,78 +1,28 @@
 # EveryBot
 
-A completely modular discord bot for all purposes.
+A completely modular and centralised discord bot for all purposes.
 
-## Usage
+## Invite Link:
+[Click here to invite *everyBot* to your server](https://discord.com/api/oauth2/authorize?client_id=602687220058554368&permissions=8&scope=bot)
 
-### Invite Link:
-[Click here to add to your server](https://discord.com/api/oauth2/authorize?client_id=602687220058554368&permissions=8&scope=bot)
+## Vision
 
-### Installation
+*everybot* aims to go where no discord bot has gone before
 
-`git clone https://github.com/Givo29/everyBot.git`
+To create a **community driven**, completely **modular** and fully **centralised** discord bot. 
 
-Or, alternatively download the zip file and unpack into destination directory.
+## So why a new bot?
 
-### Application Setup
+The [mee6](https://mee6.xyz/) bot is both modular and centralised. But not community driven - only having a limited amount of modules available for use
 
-Create a new discord application following this [setup guide](https://discordpy.readthedocs.io/en/latest/discord.html).  
-Make sure you invite the bot to your server and copy the token as you will need it for the next step.
+[Red-DiscordBot](https://github.com/Cog-Creators/Red-DiscordBot) bot is fully modular and allows you to create your own cogs, but is self hosted only. 
 
-### Bot Setup
+*everyBot* intends to create something new. By combining the best parts (Community driven, Modular and fully hosted by us) and encouraging community members to create and maintain their own modules, for all to use, without the restriction of everyone having to setup and host the bot themselves. 
 
-First, python dependencies must be installed:
+## How To Contribute
+At this moment there is no way to easily create new modules for the bot, but that is coming soon in the form of a contributing guide and docker image.
 
-`pip3 install -r requirements.txt`
+The best way to help at this time is to invite the bot to your Discord server and start using it! Submitting bugs or feedback via a Github issue is the best way to contribute to the project.
 
-Next, there is a `.secrets.json` file that sensitive and other config data is stored in, including the bot token, owner id and command prefixes.
-
-Example `.secrets.json`:
-
-```json
-{
-    "token": "this-is-a-secret-bot-token",
-    "ownerId": "this-is-a-user-id",
-    "prefixes": [
-        "$",
-        "e!"
-    ]
-}
-```
-
-Update these values according to your own user id and bot token. These will need to be updated in order for the bot to work.
-
-
-### Usage
-
-From here, the bot can be started and used simply with:  
-
-`python3 bin/bot.py`
-
-### Server Usage
-
-To run this permenantly as a process, some additional setup is required.
-
-Install [Supervisor](https://pypi.org/project/supervisor/):
-
-`pip3 install supervisor`
-
-Create/Modify the Supervisor config file `/etc/supervisor/conf.d/everybot.conf`
-
-Sample `everybot.conf`:
-
-```text
-[program:everybot]
-autostart=true
-autorestart=true
-command = python3 /srv/everyBot/bin/bot.py
-```
-
-Start the Supervisor service.
-
-```shell
-supervisorctl reread
-supervisorctl start everybot
-```
-
-## Discord Usage
-Use `$help` to get started with a list of commands.
+## Is it functional?
+Yes! everyBot is completely functional and ready to be used in your servers. All you have to do is click the link above to add it to your Discord server.
