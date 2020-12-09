@@ -240,7 +240,6 @@ class Fun(commands.Cog, name='fun'):
 
         return await ctx.send(embed=embed)
 
-<<<<<<< HEAD
     """ Weather """
     @commands.command(
         usage="[location]",
@@ -277,8 +276,6 @@ class Fun(commands.Cog, name='fun'):
         )
         return await ctx.send(embed=embed)
                 
-=======
->>>>>>> Add wink command, make fun module name lowercase.
     """ Wink At Member """
     @commands.command()
     @commands.check(check_disabled)
