@@ -22,7 +22,24 @@ class Modules(commands.Cog, name='modules'):
     @commands.guild_only()
     async def list_modules(self, ctx):
         modules_per_page = 5
-        modules = [f.name for f in scandir("everyBot/cogs") if f.is_dir() and f.name not in ["__pycache__", "help", "modules"]]
+        try:
+            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
+        except ServerSelectionTimeoutError as e:
+            embed = discord.Embed(
+                title=f"Error listing installed modules: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+        except AttributeError as e:
+            embed = discord.Embed(
+                title=f"Guild does not exist in db",
+                colour=discord.Color.red(),
+                description=f"Could not find properties for guild `{ ctx.guild.name }` in database"
+            )
+            return await ctx.send(embed=embed)
+
+        modules = [f.name for f in scandir("everyBot/cogs") if f.is_dir() and f.name not in ["__pycache__", "help", "modules"] and f.name not in installed_modules]
         page_amount = math.ceil(len(modules) / modules_per_page)
         pages = []
 
@@ -31,10 +48,12 @@ class Modules(commands.Cog, name='modules'):
             rows = 0
             page = discord.Embed(
                 title=f"Modules page { x+1 }/{ page_amount }",
+                colour=discord.Color.blue()
             )
+            page.set_thumbnail(url=ctx.me.avatar_url)
             while rows < modules_per_page:
                 try:
-                    page.add_field(name=f"{ modules[0] }", value=f"{ modules[0] }", inline=False)
+                    page.add_field(name=f"{ modules[0] }", value=f"`$install_module { modules[0] }`", inline=False)
                 except IndexError:
                     break
                 del modules[0]
@@ -43,6 +62,9 @@ class Modules(commands.Cog, name='modules'):
 
         message = await ctx.send(embed=pages[0])
 
+        if page_amount == 1:
+            return
+            
         # Adding reactions to the message
         await message.add_reaction(emoji='\u23ee')
         await message.add_reaction(emoji='\u25c0')
