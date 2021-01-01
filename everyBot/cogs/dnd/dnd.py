@@ -6,7 +6,7 @@ from textwrap import dedent
 import random
 
 from pymongo.errors import ServerSelectionTimeoutError
-from .. import database
+from everyBot.cogs import database
 
 """ Disabled Check """
 async def check_disabled(ctx):

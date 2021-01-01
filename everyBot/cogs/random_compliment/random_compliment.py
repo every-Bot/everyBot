@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-from .. import database
+from everyBot.cogs import database
 
 import requests
 import random

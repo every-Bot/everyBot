@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 from pymongo.errors import ServerSelectionTimeoutError
 
-from .. import database
+from everyBot.cogs import database
 
 import random
 import urllib.parse
