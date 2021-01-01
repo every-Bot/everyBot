@@ -164,9 +164,61 @@ class Mod(commands.Cog, name="moderation"):
             embed = discord.Embed(
                 title=f"Failed muting { member.display_name }",
                 colour=discord.Color.red(),
-                description=f"{ ctx.author.display_name }, you do not have the correct permissins to mute { member.display_name }"
+                description=f"{ ctx.author.display_name }, you do not have the correct permissions to mute { member.display_name }"
             )
             return await ctx.send(embed=embed)
+
+    """ Unmute Member """
+    @commands.command(
+        usage="[member]",
+        description="Unmutes a member before time is up"
+    )
+    @commands.check(check_disabled)
+    @commands.bot_has_permissions(kick_members=True)
+    @commands.has_permissions(kick_members=True)
+    @commands.guild_only()
+    async def unmute(self, ctx, member: discord.Member):
+        # Try to get muted role from guild
+        role = discord.utils.get(ctx.guild.roles, name="muted")
+
+        # If the role doesn't exist, we need to create it
+        if not role:
+            # Try to create muted role
+            try:
+                role = await ctx.guild.create_role(name="muted", reason="To use for muting bad members")
+                # Remove perms for role to chat in any channel
+                for channel in ctx.guild.channels: 
+                    await channel.set_permissions(
+                        role,
+                        send_messages=False
+                    )
+            # If the bot can't create the new role
+            except discord.Forbidden as e:
+                embed = discord.Embed(
+                    title=f"Failed unmuting { member.display_name }",
+                    colour=discord.Color.red(),
+                    description=f"{ ctx.author.display_name }, you do not have the correct permissions to unmute { member.display_name }"
+                )
+                return await ctx.send(embed=embed)
+
+        if role not in member.roles:
+            embed = discord.Embed(
+                title="Error unmuting member",
+                colour=discord.Color.red(),
+                description=f"{ member.display_name } is not currently muted."
+            )
+            embed.set_thumbnail(url=member.avatar_url)
+            return await ctx.send(embed=embed)
+
+        await member.remove_roles(role)
+        embed = discord.Embed(
+            title="Member has been unmuted",
+            colour=discord.Color.green(),
+            description=f"{ member.display_name } has been successfully unmuted."
+        )
+        embed.set_thumbnail(url=member.avatar_url)
+        return await ctx.send(embed=embed)
+
 
     """ Kick Member """
     @commands.command(
