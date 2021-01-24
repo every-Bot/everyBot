@@ -130,13 +130,13 @@ class Members(commands.Cog, name="members"):
     """ Set A User's nickname """
     @commands.command(
         aliases=['nick'],
-        usage="[nickname] (optional member)",
+        usage="[member] [nickname]",
         description="Set a members nickname"
     )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(manage_nicknames=True)
     @commands.has_permissions(manage_nicknames=True)
-    async def nickname(self, ctx, *nickname, member: discord.Member=None,):
+    async def nickname(self, ctx, member: discord.Member, *nickname):
         # Checking user permissions
         if member != ctx.author and member.top_role >= ctx.author.top_role:
             return await ctx.send(f'**`ERROR:`** You do not have high enough permissions to change { member.display_name }\'s role.')
