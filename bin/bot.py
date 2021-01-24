@@ -10,22 +10,6 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 
 from everyBot.cogs import database
 
-def get_prefix(bot, message):
-    prefixes = get_secret("prefixes")
-
-    if not message.guild:
-        return '?'
-
-    return commands.when_mentioned_or(*prefixes)(bot, message)
-
-def get_secret(secret):
-    try:
-        with open(".secrets.json") as file:
-            data = json.load(file)
-            return data[secret]
-    except FileNotFoundError:
-        sys.exit("Error: Please ensure there is a .secrets.json file in everyBot's root directory")
-
 # modules
 modules = [
     'everyBot.cogs.help',
@@ -42,8 +26,8 @@ modules = [
     ]
 
 bot = commands.Bot(
-    command_prefix=get_prefix,
-    owner_id=get_secret("ownerId"),
+    command_prefix=os.getenv("PREFIX"),
+    owner_id=os.getenv("OWNER_ID"),
     case_insensitive=True,
     help_command=None
 )
@@ -67,4 +51,4 @@ async def on_ready():
 async def on_guild_join(guild):
     await database.add_guild(guild)
 
-bot.run(get_secret("token"), bot=True, reconnect=True)
+bot.run(os.getenv("TOKEN"), bot=True, reconnect=True)

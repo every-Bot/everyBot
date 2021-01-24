@@ -3,3 +3,4 @@ pymongo
 umongo
 dnspython
 psutil
+motor
