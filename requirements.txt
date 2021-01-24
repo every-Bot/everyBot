@@ -4,3 +4,4 @@ umongo
 dnspython
 psutil
 motor
+requests
