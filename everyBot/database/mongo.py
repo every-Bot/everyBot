@@ -8,13 +8,8 @@ import json
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-def fetch_db_secrets(secret) -> str:
-    with open('.secrets.json') as file:
-        data = json.load(file)
-        return data[secret]
-
-db = AsyncIOMotorClient(fetch_db_secrets("db_uri"))
-collection = db[fetch_db_secrets("db_name")]
+db = AsyncIOMotorClient(os.getenv("DB_URI"))
+collection = db[os.getenv("DB_NAME")]
 instance = Instance(collection)
 
 @instance.register

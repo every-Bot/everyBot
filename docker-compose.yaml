@@ -1,0 +1,13 @@
+---
+version: "3.7"
+services:
+  everybot:
+    restart: always
+    container_name: everybot
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    volumes:
+      - ./:/app

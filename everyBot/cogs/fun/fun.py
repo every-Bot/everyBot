@@ -3,7 +3,7 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 from pymongo.errors import ServerSelectionTimeoutError
 
-from .. import database
+from everyBot.cogs import database
 
 import random
 import urllib.parse
@@ -63,31 +63,6 @@ class Fun(commands.Cog, name='fun'):
             description=(f"""{ response }""")
         )
 
-        return await ctx.send(embed=embed)
-
-    """ FML """
-    @commands.command(
-        description="Find someone who's life is worse than yours"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def fml(self, ctx):
-        try:
-            # Getting 'fml' from api and formatting response
-            response = json.loads((requests.get('https://api.alexflipnote.dev/fml')).text)
-        except requests.exceptions.RequestException as e:
-            embed = discord.Embed(
-                title=f"Request Error: { type(e).__name__ }",
-                colour=discord.Color.red(),
-                description=f"{ e }"
-            )
-            return await ctx.send(embed=embed)
-        
-        embed = discord.Embed(
-            title = f"FML",
-            colour = discord.Color.green(),
-            description=(f"""{ response['text'] }""")
-        )
         return await ctx.send(embed=embed)
 
     """ Dad Joke """
@@ -171,53 +146,6 @@ class Fun(commands.Cog, name='fun'):
         )
         return await ctx.send(embed=embed)
 
-
-    """ Achievement Get """
-    @commands.command(
-        aliases=['achievement-get', 'achievementget'],
-        usage="[text]",
-        description="Get an achievement"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def achievement(self, ctx, *, text):
-        text = urllib.parse.quote(text)
-        return await ctx.send(f'https://api.alexflipnote.dev/achievement?text={ text }')
-
-    """ Truth Scroll """
-    @commands.command(
-        aliases=['truthscroll', 'truth-scroll'],
-        usage="[text]",
-        description="Tell an ultimate truth"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def scroll(self, ctx, *, text):
-        text = urllib.parse.quote(text)
-        return await ctx.send(f'https://api.alexflipnote.dev/scroll?text={ text }') 
-
-    """ Supreme """
-    @commands.command(
-        usage="[text]",
-        description="Text in the supreme logo"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def supreme(self, ctx, *, text):
-        text = urllib.parse.quote(text)
-        return await ctx.send(f'https://api.alexflipnote.dev/supreme?text={ text }')
-
-    """ Facts """
-    @commands.command(
-        usage="[text]",
-        description="Hit everyone with straight fact"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
-    async def facts(self, ctx, *, text):
-        text = urllib.parse.quote(text)
-        return await ctx.send(f'https://api.alexflipnote.dev/facts?text={ text }')
-        
     """ Trump Quote """
     @commands.command(
         description="Random quote from everyone's favourite president"
@@ -310,6 +238,42 @@ class Fun(commands.Cog, name='fun'):
         embed.set_thumbnail(url="https://i.imgur.com/RoKVYoy.jpeg")
         embed.set_author(name=f"Definition by: { response.json()['list'][0]['author'] } ")
 
+        return await ctx.send(embed=embed)
+
+    """ Weather """
+    @commands.command(
+        usage="[location]",
+        description="Check the current weather"   
+    )
+    @commands.check(check_disabled)
+    async def weather(self, ctx, *location):
+        try:
+            location = ' '.join(location)
+            chars = set("{}[]<>?_@#\$&")
+            if any((c in chars) for c in location):
+                embed = discord.Embed(
+                    title=f"Error: Prohibited character(s) in string.",
+                    colour=discord.Color.red(),
+                    description=f"Request contains prohibited characters. Remove non-alphabetical characters and try again."
+                )
+                return await ctx.send(embed=embed)
+
+            loc = (location.replace(" ", "+")).replace(",", "+")
+            response = requests.get('http://wttr.in/'+loc+'?format=%c+%C+%t+%w').text
+
+        except Exception as e:
+            embed = discord.Embed(
+                title=f"{ type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title = f"{ location.capitalize() }",
+            colour = discord.Color.green(),
+            description=(f"{ response }")
+        )
         return await ctx.send(embed=embed)
 
 
