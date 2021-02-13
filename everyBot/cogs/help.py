@@ -15,8 +15,6 @@ class Help(commands.Cog, name="help"):
         try:
             installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
             disabled_commands = await database.fetch_guild_disabled_commands(ctx.guild.id)
-            modules = installed_modules + self.bot.base_cogs
-            modules = sorted(modules)
         except ServerSelectionTimeoutError as e:
             embed = discord.Embed(
                 title=f"Error listing installed modules: { type(e).__name__ }",
@@ -25,17 +23,19 @@ class Help(commands.Cog, name="help"):
             )
             return await ctx.send(embed=embed)
 
+        modules = sorted(installed_modules + self.bot.base_cogs)
+
         if module == None:
             embed = discord.Embed(
                 title=f"{ ctx.me.display_name } Modules",
                 color=discord.Color.blue()
             )
             embed.set_thumbnail(url=ctx.me.avatar_url)
-            for module in modules:
-                cog = self.bot.get_cog(module)
+            for bot_module in modules:
+                cog = self.bot.get_cog(bot_module)
                 if cog is not None:
                     if not cog.__cog_settings__ or not cog.__cog_settings__['hidden']:
-                        embed.add_field(name=module, value=f"`{ ctx.prefix }help { module }`", inline=False)
+                        embed.add_field(name=bot_module, value=f"`{ ctx.prefix }help { bot_module }`", inline=False)
                 
             return await ctx.send(embed=embed)
 
@@ -62,23 +62,21 @@ class Help(commands.Cog, name="help"):
                 title=f"{ cog.qualified_name.capitalize() } Module ({ x + 1 }/{ page_amount })",
             )
             page.set_thumbnail(url=ctx.me.avatar_url)
+            active_commands = [com for com in commands if com.name not in disabled_commands]
 
             # Creating pages
-            while rows < commands_per_page:
+            while rows < commands_per_page and len(active_commands) >= 1:
                 field_prefix = ""
                 if rows > 0:
                     field_prefix = "\u200b\n"
-                if disabled_commands and commands[0] in disabled_commands:
-                    del commands[0]
-                    continue
                 try:
-                    if commands[0].usage:
-                        page.add_field(name=f"{ field_prefix }`{ ctx.prefix }{ commands[0].name } { commands[0].usage }`", value=commands[0].description, inline=False)
+                    if active_commands[0].usage:
+                        page.add_field(name=f"{ field_prefix }`{ ctx.prefix }{ active_commands[0].name } { active_commands[0].usage }`", value=active_commands[0].description, inline=False)
                     else:
-                        page.add_field(name=f"{ field_prefix }`{ ctx.prefix }{ commands[0].name }`", value=commands[0].description, inline=False)
+                        page.add_field(name=f"{ field_prefix }`{ ctx.prefix }{ active_commands[0].name }`", value=active_commands[0].description, inline=False)
                 except IndexError:
                     break
-                del commands[0]
+                active_commands.pop(0)
                 rows += 1
             pages.append(page)
 
