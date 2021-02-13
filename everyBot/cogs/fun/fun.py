@@ -304,6 +304,63 @@ class Fun(commands.Cog, name='fun'):
 
         return await ctx.send(embed=embed)
 
+    """ Pat """
+    @commands.command(
+        usage="[member]",
+        description="There there"
+    )
+    @commands.check(check_disabled)
+    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+    async def pat(self, ctx, member: discord.Member):
+        # Make Request
+        try:
+            res = requests.get("https://some-random-api.ml/animu/pat")
+            gif = res.json()["link"]
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title="Pat",
+            description=member.mention
+        )
+        embed.set_image(url=gif)
+
+        return await ctx.send(embed=embed)
+
+    """ Hug """
+    @commands.command(
+        usage="[member]",
+        description="hugs?"
+    )
+    @commands.check(check_disabled)
+    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+    async def hug(self, ctx, member: discord.Member):
+        # Make Request
+        try:
+            res = requests.get("https://some-random-api.ml/animu/hug")
+            gif = res.json()["link"]
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title="Hug",
+            description=member.mention
+        )
+        embed.set_image(url=gif)
+
+        return await ctx.send(embed=embed)
+
+
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within commands
