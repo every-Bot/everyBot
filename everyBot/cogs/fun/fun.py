@@ -277,7 +277,10 @@ class Fun(commands.Cog, name='fun'):
         return await ctx.send(embed=embed)
                 
     """ Wink At Member """
-    @commands.command()
+    @commands.command(
+        usage="[member]",
+        description="wink wink, nudge nudge"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def wink(self, ctx, member: discord.Member):
