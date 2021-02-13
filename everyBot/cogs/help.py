@@ -53,6 +53,7 @@ class Help(commands.Cog, name="help"):
         commands_per_page = 5
         cog = self.bot.get_cog(module)
         commands = cog.get_commands()
+        active_commands = [com for com in commands if com.name not in disabled_commands]
         page_amount = math.ceil(len(commands) / commands_per_page)
         pages = []
 
@@ -62,7 +63,6 @@ class Help(commands.Cog, name="help"):
                 title=f"{ cog.qualified_name.capitalize() } Module ({ x + 1 }/{ page_amount })",
             )
             page.set_thumbnail(url=ctx.me.avatar_url)
-            active_commands = [com for com in commands if com.name not in disabled_commands]
 
             # Creating pages
             while rows < commands_per_page and len(active_commands) >= 1:
