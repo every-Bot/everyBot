@@ -78,35 +78,6 @@ class Animals(commands.Cog, name='animals'):
                 description=f"The key { e } does not exist or the API may be unreachable"
             )
             return await ctx.send(embed=embed)
-        
-
-    """ Sad Cat """
-    @commands.command(
-        aliases=['sadkitty'],
-        description="Very sad kitty"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def sadcat(self, ctx):
-        try:
-            response = requests.get('https://api.alexflipnote.dev/sadcat')
-        except requests.exceptions.RequestException as e:
-            embed = discord.Embed(
-                title=f"Request Error: { type(e).__name__ }",
-                colour=discord.Color.red(),
-                description=f"{ e }"
-            )
-            return await ctx.send(embed=embed)
-
-        try:
-            return await ctx.send(response.json()['file'])
-        except KeyError as e:
-            embed = discord.Embed(
-                title=f"Key Error",
-                colour=discord.Color.red(),
-                description=f"The key { e } does not exist or the API may be unreachable"
-            )
-            return await ctx.send(embed=embed)
 
     """ Dogs """
     @commands.command(
@@ -193,7 +164,10 @@ class Animals(commands.Cog, name='animals'):
             return await ctx.send(embed=embed)
 
     """ Animal Fact """
-    @commands.command(usage="[dog|cat|panda|fox|red_panda|koala|bird|racoon|kangaroo]")
+    @commands.command(
+        usage="[dog|cat|panda|fox|red_panda|koala|bird|racoon|kangaroo]",
+        description="The more you know"
+    )
     @commands.check(check_disabled)
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def animal_fact(self, ctx, animal: str):
