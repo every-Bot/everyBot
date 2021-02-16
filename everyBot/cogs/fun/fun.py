@@ -114,7 +114,7 @@ class Fun(commands.Cog, name='fun'):
             return await ctx.send(embed=embed)
         
         embed = discord.Embed(
-            title = f"Dad Joke",
+            title = f"Compliment",
             colour = discord.Color.green(),
             description=(f'{ member.display_name }, { compliment }')
         )
