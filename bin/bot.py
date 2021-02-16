@@ -27,7 +27,7 @@ modules = [
 
 bot = commands.Bot(
     command_prefix=os.getenv("PREFIX"),
-    owner_id=os.getenv("OWNER_ID"),
+    owner_id=int(os.getenv("OWNER_ID")),
     case_insensitive=True,
     help_command=None
 )
