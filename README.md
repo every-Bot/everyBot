@@ -58,11 +58,13 @@ docker-compose up -d
 
 There are two ways you can contribute:
 ### 1. Developing a new module
-
+**COMING SOON**
 
 ### 2. Contributing to the base bot
-
-
+If you don't want to create a new module but you still want to help, there are many ways you can do so.
+- Creating issues if you come across any while using everyBot
+- Helping us solve existing issues
+- And creating pull requests with cool new base features or bug fixes.
 
 ## Is it functional?
 Yes! everyBot is completely functional and ready to be used in your servers. All you have to do is click the link above to add it to your Discord server.
