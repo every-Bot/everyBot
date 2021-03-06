@@ -3,6 +3,8 @@ from discord.ext import commands
 
 import sys
 
+from everyBot.cogs import database
+
 attrs = {
     'hidden': True
 }
@@ -11,10 +13,21 @@ class Owner(commands.Cog, name='owner', command_attrs=attrs):
     def __init__(self, bot):
         self.bot = bot
 
+    """ Add Guilds To DB """
+    @commands.command(
+        description="Update guilds in db"
+    )
+    @commands.is_owner()
+    async def update_guilds(self, ctx):
+        for guild in self.bot.guilds:
+            await database.add_guild(guild)
+        await ctx.send("guilds added")
+
     """ Shutdown Bot """
     @commands.command(
         description="Shuts down the bot"
     )
+    @commands.is_owner()
     async def shutdown(self, ctx):
         await ctx.send('**`Shutting Down`** Goodbye.')
         await self.bot.logout()
@@ -24,6 +37,7 @@ class Owner(commands.Cog, name='owner', command_attrs=attrs):
         usage="[type] [value]",
         description="Change the activity of the bot"
     )
+    @commands.is_owner()
     async def activity(self, ctx, type: str, *, name: str):
         # Checking which activity type was specified
         type = type.lower()
@@ -49,6 +63,7 @@ class Owner(commands.Cog, name='owner', command_attrs=attrs):
         usage="[invisible|idle|dnd]",
         description="Change the status of the bot"
     )
+    @commands.is_owner()
     async def status(self, ctx, status: str):
         # Check which status was specified
         status = status.lower()
@@ -70,11 +85,6 @@ class Owner(commands.Cog, name='owner', command_attrs=attrs):
             return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
         else:
             return await ctx.send(f'**`SUCCESS:`** bot status changed to { bot_status }')
-
-    """ Owner Check """
-    async def cog_check(self, ctx):
-        # Making sure author of these commands is the bot owner
-        return await ctx.bot.is_owner(ctx.author)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
