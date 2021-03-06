@@ -6,4 +6,4 @@ WORKDIR /app
 COPY requirements.txt /app
 RUN pip3 install -r requirements.txt
 
-CMD ["python3", "bin/bot.py"]
+CMD ["python3", "-u", "bin/bot.py"]
