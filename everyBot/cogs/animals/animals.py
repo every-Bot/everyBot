@@ -165,7 +165,7 @@ class Animals(commands.Cog, name='animals'):
 
     """ Animal Fact """
     @commands.command(
-        usage="[dog|cat|panda|fox|red_panda|koala|bird|racoon|kangaroo]",
+        usage="[dog|cat|panda|fox|red_panda|koala|racoon|kangaroo]",
         description="The more you know"
     )
     @commands.check(check_disabled)
