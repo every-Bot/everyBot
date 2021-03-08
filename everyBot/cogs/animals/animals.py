@@ -60,7 +60,7 @@ class Animals(commands.Cog, name='animals'):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def cat(self, ctx):
         try:
-            response = await self.get_image(ctx, 'https://api.alexflipnote.dev/cats', 'file')
+            response = requests.get('https://some-random-api.ml/img/cat')
         except requests.exceptions.RequestException as e:
             embed = discord.Embed(
                 title=f"Request Error: { type(e).__name__ }",
@@ -68,28 +68,16 @@ class Animals(commands.Cog, name='animals'):
                 description=f"{ e }"
             )
             return await ctx.send(embed=embed)
-        
-        return await ctx.send(response['file'])
 
-    """ Sad Cat """
-    @commands.command(
-        aliases=['sadkitty'],
-        description="Very sad kitty"
-    )
-    @commands.check(check_disabled)
-    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
-    async def sadcat(self, ctx):
         try:
-            response = await self.get_image(ctx, 'https://api.alexflipnote.dev/sadcat', 'file')
-        except requests.exceptions.RequestException as e:
+            return await ctx.send(response.json()['link'])
+        except KeyError as e:
             embed = discord.Embed(
-                title=f"Request Error: { type(e).__name__ }",
+                title=f"Key Error",
                 colour=discord.Color.red(),
-                description=f"{ e }"
+                description=f"The key { e } does not exist or the API may be unreachable"
             )
             return await ctx.send(embed=embed)
-
-        return await ctx.send(response['file'])
 
     """ Dogs """
     @commands.command(
@@ -100,7 +88,7 @@ class Animals(commands.Cog, name='animals'):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def dog(self, ctx):
         try:
-            response = await self.get_image(ctx, 'https://api.alexflipnote.dev/dogs', 'file')
+            response = requests.get("https://some-random-api.ml/img/dog")
         except requests.exceptions.RequestException as e:
             embed = discord.Embed(
                 title=f"Request Error: { type(e).__name__ }",
@@ -109,7 +97,15 @@ class Animals(commands.Cog, name='animals'):
             )
             return await ctx.send(embed=embed)
 
-        return await ctx.send(response['file'])
+        try:
+            return await ctx.send(response.json()['link'])
+        except KeyError as e:
+            embed = discord.Embed(
+                title=f"Key Error",
+                colour=discord.Color.red(),
+                description=f"The key { e } does not exist or the API may be unreachable"
+            )
+            return await ctx.send(embed=embed)
 
     """ Birds """
     @commands.command(
@@ -120,7 +116,7 @@ class Animals(commands.Cog, name='animals'):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def bird(self, ctx):
         try:
-            response = await self.get_image(ctx, 'https://api.alexflipnote.dev/birb', 'file')
+            response = requests.get("https://some-random-api.ml/img/birb")
         except requests.exceptions.RequestException as e:
             embed = discord.Embed(
                 title=f"Request Error: { type(e).__name__ }",
@@ -129,7 +125,15 @@ class Animals(commands.Cog, name='animals'):
             )
             return await ctx.send(embed=embed)
 
-        return await ctx.send(response['file'])
+        try:
+            return await ctx.send(response.json()['link'])
+        except KeyError as e:
+            embed = discord.Embed(
+                title=f"Key Error",
+                colour=discord.Color.red(),
+                description=f"The key { e } does not exist or the API may be unreachable"
+            )
+            return await ctx.send(embed=embed)
 
     """ Duck """
     @commands.command(
@@ -140,7 +144,7 @@ class Animals(commands.Cog, name='animals'):
     @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
     async def duck(self, ctx):
         try:
-            response = await self.get_image(ctx, 'https://random-d.uk/api/v1/random', 'url')
+            response = requests.get("https://random-d.uk/api/v1/random")
         except requests.exceptions.RequestException as e:
             embed = discord.Embed(
                 title=f"Request Error: { type(e).__name__ }",
@@ -149,7 +153,59 @@ class Animals(commands.Cog, name='animals'):
             )
             return await ctx.send(embed=embed)
 
-        return await ctx.send(response['url'])
+        try:
+            return await ctx.send(response.json()['url'])
+        except KeyError as e:
+            embed = discord.Embed(
+                title=f"Key Error",
+                colour=discord.Color.red(),
+                description=f"The key { e } does not exist or the API may be unreachable"
+            )
+            return await ctx.send(embed=embed)
+
+    """ Animal Fact """
+    @commands.command(
+        usage="[dog|cat|panda|fox|red_panda|koala|bird|racoon|kangaroo]",
+        description="The more you know"
+    )
+    @commands.check(check_disabled)
+    @commands.cooldown(rate=1, per=1.5, type=commands.BucketType.user)
+    async def animal_fact(self, ctx, animal: str):
+
+        # Get a list of all valid animals from command usage
+        usage = ctx.command.usage[1:-1].split("|")
+
+        # Ensure given animal is in list of accepted animals
+        if animal not in usage:
+            animals = ", ".join(usage)
+            embed = discord.Embed(
+                title="Amimal Fact",
+                colour=discord.Color.red(),
+                description=f"Please specify an animal in { animals }"
+            )
+            return await ctx.send(embed=embed)
+
+        # Make API request
+        url = f"https://some-random-api.ml/animal/{ animal }"
+        try:
+            res = requests.get(url)
+            json_data = res.json()
+        except requests.exceptions.RequestException as e:
+            embed = discord.Embed(
+                title=f"Request Error: { type(e).__name__ }",
+                colour=discord.Color.red(),
+                description=f"{ e }"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title=f"{ animal.capitalize() } Fact",
+            colour=discord.Color.blue(),
+            description=f"{ json_data['fact'] }"
+        )
+        embed.set_thumbnail(url=json_data['image'])
+
+        return await ctx.send(embed=embed)
 
     """ Error Check """
     async def cog_command_error(self, ctx, error):
