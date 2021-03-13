@@ -16,6 +16,12 @@ async def mute_member(ctx, member: discord.Member, reason: str, time: int):
     # If the role doesn't exist, we need to create it
     if not role:
         # Try to create muted role
+        embed = discord.Embed(
+            title="Role not found",
+            description="Trying to create muted role..."
+        )
+        message = await ctx.send(embed=embed)
+
         try:
             role = await ctx.guild.create_role(name="muted", reason="To use for muting bad members")
             # Remove perms for role to chat in any channel
@@ -24,6 +30,11 @@ async def mute_member(ctx, member: discord.Member, reason: str, time: int):
                     role,
                     send_messages=False
                 )
+            embed = discord.Embed(
+                title="Role created successfully",
+                description="muted role created."
+            )
+            await message.edit(embed=embed)
         # If the bot can't create the new role
         except discord.Forbidden as e:
             raise e
@@ -150,16 +161,16 @@ class Mod(commands.Cog, name="moderation"):
 
     """ Mute Member """
     @commands.command(
-        usage="[member] (optional reason) (optional time)",
+        usage="[member] [duration] (optional reason)",
         description="Mutes a member"
     )
     @commands.check(check_disabled)
     @commands.bot_has_permissions(kick_members=True)
     @commands.has_permissions(kick_members=True)
     @commands.guild_only()
-    async def mute(self, ctx, member: discord.Member, reason: str="None", time: int=5):
+    async def mute(self, ctx, member: discord.Member, duration: int, *, reason: str="None"):
         try:
-            await mute_member(ctx, member, reason, time)
+            await mute_member(ctx, member, reason, duration)
         except discord.Forbidden as e:
             embed = discord.Embed(
                 title=f"Failed muting { member.display_name }",
@@ -183,23 +194,12 @@ class Mod(commands.Cog, name="moderation"):
 
         # If the role doesn't exist, we need to create it
         if not role:
-            # Try to create muted role
-            try:
-                role = await ctx.guild.create_role(name="muted", reason="To use for muting bad members")
-                # Remove perms for role to chat in any channel
-                for channel in ctx.guild.channels: 
-                    await channel.set_permissions(
-                        role,
-                        send_messages=False
-                    )
-            # If the bot can't create the new role
-            except discord.Forbidden as e:
-                embed = discord.Embed(
-                    title=f"Failed unmuting { member.display_name }",
-                    colour=discord.Color.red(),
-                    description=f"{ ctx.author.display_name }, you do not have the correct permissions to unmute { member.display_name }"
-                )
-                return await ctx.send(embed=embed)
+            embed = discord.Embed(
+                title="Error: Role not found",
+                colour=discord.Color.red(),
+                description=f"The role 'muted' does not exist"
+            )
+            return await ctx.send(embed=embed)
 
         if role not in member.roles:
             embed = discord.Embed(
