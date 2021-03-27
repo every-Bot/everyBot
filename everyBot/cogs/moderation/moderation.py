@@ -368,6 +368,30 @@ class Mod(commands.Cog, name="moderation"):
 
         return await ctx.send(embed=embed)
 
+    """ Set Server Prefix """
+    @commands.command()
+    @commands.check(check_disabled)
+    @commands.guild_only()
+    async def set_prefix(self, ctx, *, prefix):
+        try:
+            guild = await database.fetch_guild(ctx.guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            embed = discord.Embed(
+                title="Error setting prefix",
+                colour=discord.Color.red(),
+                description=f"Could not set server prefix: { e }"
+            )
+            return await ctx.send(embed=embed)
+        guild.prefix = prefix
+        await guild.commit()
+
+        embed = discord.Embed(
+            title="Prefix set",
+            colour=discord.Color.green(),
+            description=f"Server prefix now set to `{ prefix }`"
+        )
+        return await ctx.send(embed=embed)
+
     """ Error Check """
     async def cog_command_error(self, ctx, error):
         # Handling any errors within command
