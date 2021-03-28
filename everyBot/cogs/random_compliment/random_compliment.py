@@ -12,6 +12,7 @@ class RandomCompliment(commands.Cog, name="Random"):
         self.bot = bot
 
     async def _check_active(self, guild_id):
+        """ This is a horrible way to do this """
         try:
             guild_installed_modules = await database.fetch_guild_installed_modules(guild_id)
         except Exception:
