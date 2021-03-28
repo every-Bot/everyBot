@@ -1,5 +1,7 @@
 import discord
 from discord.ext import commands
+from pymongo.errors import ServerSelectionTimeoutError
+
 from everyBot.cogs import database
 
 import requests
@@ -9,22 +11,23 @@ class RandomCompliment(commands.Cog, name="Random"):
     def __init__(self, bot):
         self.bot = bot
 
-    async def cog_check(self, ctx):
+    async def _check_active(self, guild_id):
         try:
-            installed_modules = await database.fetch_guild_installed_modules(ctx.guild.id)
-        except (ServerSelectionTimeoutError, AttributeError) as e:
-            embed = discord.Embed(
-                title="Failed checking module",
-                colour=discord.Color.red(),
-                description=f"Could not check if module is installed: { e }"
-            )
-            return await ctx.send(embed=embed)
-
-        return ctx.command.cog_name.lower() in installed_modules
+            guild_installed_modules = await database.fetch_guild_installed_modules(guild_id)
+        except Exception:
+            # No output is needed, just do not send compliment
+            return False
+        
+        if "random_compliment" in guild_installed_modules:
+            return True
+        else:
+            return False
 
     @commands.Cog.listener()
     async def on_message(self, message):
-        if message.author.bot != True and random.randint(0, 75) == 1:
+        if message.author.bot != True and random.randint(0, 100) == 1:
+            if not await self._check_active(message.guild.id):
+                return
             # Getting compliment from api
             response = requests.get('https://complimentr.com/api')
             # Formatting response
