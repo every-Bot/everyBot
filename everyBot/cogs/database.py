@@ -235,7 +235,8 @@ async def add_guild(guild):
         guild: discord guild object
     """
     new_guild = mongo.Guild(
-        guild_id = guild.id
+        guild_id = guild.id,
+        prefix = os.getenv("PREFIX")
     )
 
     await new_guild.commit()

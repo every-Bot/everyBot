@@ -3,6 +3,8 @@ import sys
 import os
 import traceback
 import json
+import asyncio
+from pymongo.errors import ServerSelectionTimeoutError
 
 from discord.ext import commands
 
@@ -25,8 +27,20 @@ modules = [
     'everyBot.cogs.math.math'
     ]
 
+async def determine_prefix(bot, message):
+    guild = message.guild
+    if not guild:
+        return os.getenv("PREFIX")
+    
+    try:
+        db_guild = await database.fetch_guild(guild.id)
+    except (ServerSelectionTimeoutError, AttributeError) as e:
+        return os.getenv("PREFIX")
+
+    return db_guild.prefix
+
 bot = commands.Bot(
-    command_prefix=os.getenv("PREFIX"),
+    command_prefix=determine_prefix,
     owner_id=int(os.getenv("OWNER_ID")),
     case_insensitive=True,
     help_command=None
@@ -44,11 +58,20 @@ if __name__ == '__main__':
 
 @bot.event
 async def on_ready():
-    print(f'\n\nLogged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
+    for guild in bot.guilds:
+        try:
+            db_guild = await database.fetch_guild(guild.id)
+        except (ServerSelectionTimeoutError, AttributeError) as e:
+            return
+        if not db_guild:
+            await database.add_guild(guild)
+    print("\n\nAll guilds added to db")
+    print(f'Logged in as: {bot.user.name} - {bot.user.id}\nVersion: {discord.__version__}\n')
     print(f'Successfully logged in and booted...!')
 
 @bot.event
 async def on_guild_join(guild):
     await database.add_guild(guild)
+
 
 bot.run(os.getenv("TOKEN"), bot=True, reconnect=True)
