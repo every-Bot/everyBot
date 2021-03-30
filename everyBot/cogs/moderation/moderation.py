@@ -369,7 +369,10 @@ class Mod(commands.Cog, name="moderation"):
         return await ctx.send(embed=embed)
 
     """ Set Server Prefix """
-    @commands.command()
+    @commands.command(
+        usage="[prefix]",
+        description="Set custom prefix for your server"
+    )
     @commands.check(check_disabled)
     @commands.guild_only()
     async def set_prefix(self, ctx, *, prefix):
