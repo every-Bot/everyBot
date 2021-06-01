@@ -5,10 +5,13 @@ import traceback
 import json
 import asyncio
 from pymongo.errors import ServerSelectionTimeoutError
+import logging
 
 from discord.ext import commands
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+logging.basicConfig(filename=os.getenv("LOG_FILE"), level=logging.INFO, filemode='a', format='%(asctime)s - %(levelname)s - %(message)s')
 
 from everyBot.cogs import database
 
@@ -72,6 +75,11 @@ async def on_ready():
 @bot.event
 async def on_guild_join(guild):
     await database.add_guild(guild)
+
+@bot.before_invoke
+async def command_logger(ctx):
+  server = ctx.guild.name
+  logging.info(str(server) + ":" + str(ctx.author) + " ran the command "+ bot.command_prefix + str(ctx.command))
 
 
 bot.run(os.getenv("TOKEN"), bot=True, reconnect=True)
