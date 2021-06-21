@@ -240,9 +240,15 @@ class Mod(commands.Cog, name="moderation"):
             await member.kick(reason=reason)
         except Exception as e:
             # Handle errors if any
-            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.reply(f'I do not have the correct permissions.')
         else:
-            return await ctx.send(f'**`SUCCESS`** User { member.display_name } has been kicked')
+            embed = discord.Embed(
+                title="Member has been kicked",
+                colour=discord.Color.green(),
+                description=f"{ member.display_name } has been successfully kicked."
+            )
+            embed.set_thumbnail(url=member.avatar_url)
+            return await ctx.send(embed=embed)
 
     """ Ban Member """
     @commands.command(
@@ -264,9 +270,15 @@ class Mod(commands.Cog, name="moderation"):
             await member.ban(reason=reason)
         except Exception as e:
             # Handle errors if any
-            return await ctx.send(f'**`ERROR:`** { type(e).__name__ } - { e }')
+            return await ctx.reply(f'I do not have the correct permissions.')
         else:
-            return await ctx.send(f'**`SUCCESS:`** User { member.display_name } has been banned')
+            embed = discord.Embed(
+                title="Member has been banned",
+                colour=discord.Color.green(),
+                description=f"{ member.display_name } has been successfully banned."
+            )
+            embed.set_thumbnail(url=member.avatar_url)
+            return await ctx.send(embed=embed)
 
     """ Unban Member """
     @commands.command(
