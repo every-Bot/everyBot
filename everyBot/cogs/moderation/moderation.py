@@ -28,7 +28,8 @@ async def mute_member(ctx, member: discord.Member, reason: str, time: int):
             for channel in ctx.guild.channels: 
                 await channel.set_permissions(
                     role,
-                    send_messages=False
+                    send_messages=False,
+                    add_reactions=False
                 )
             embed = discord.Embed(
                 title="Role created successfully",
