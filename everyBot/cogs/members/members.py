@@ -87,7 +87,7 @@ class Members(commands.Cog, name="members"):
         # If no member is mentioned, assume author
         if member is None:
             member = ctx.author
-        return await ctx.send(f'{ member.display_name } has joined on { member.joined_at }')
+        return await ctx.reply(f'{ member.display_name } joined the server on { member.joined_at.strftime("%d/%m/%Y") }')
 
     """ Check top server role of the user """
     @commands.command(
