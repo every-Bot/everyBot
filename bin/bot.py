@@ -86,7 +86,7 @@ async def on_guild_join(guild):
 async def command_logger(ctx):
   # Logging any command run
   server = ctx.guild.name
-  logging.info(str(server) + ":" + str(ctx.author) + " ran the command "+ str(ctx.command))
+  logging.info(str(server) + ":" + str(ctx.author) + " ran the command '"+ str(ctx.command) +"'")
 
 """ Error Check """
 async def cog_command_error(ctx, error):
