@@ -8,6 +8,8 @@ import random
 from pymongo.errors import ServerSelectionTimeoutError
 from everyBot.cogs import database
 
+import d20
+
 """ Disabled Check """
 async def check_disabled(ctx):
     try:
@@ -52,6 +54,30 @@ class DnD(commands.Cog, name='dnd'):
             description=f"{ ctx.author.mention } rolled to { text } and got a { random.randint(0, 20) }!"
         )
 
+        return await ctx.send(embed=embed)
+
+    """ Roll """
+    @commands.command(
+        usage="[dice]",
+        description="Roll a specified dice (eg. 2d6)"
+    )
+    @commands.check(check_disabled)
+    async def roll(self, ctx, *, text):
+        try:
+            result = d20.roll(text)
+        except:
+            embed = discord.Embed(
+                title="Unable to perform roll",
+                colour=discord.Color.red(),
+                description=f"Check your formatting and try again"
+            )
+            return await ctx.send(embed=embed)
+
+        embed = discord.Embed(
+            title="Roll Results",
+            colour=discord.Color.blue(),
+            description=f"{ ctx.author.mention } rolled { result }!"
+        )
         return await ctx.send(embed=embed)
 
     """ Error Check """
