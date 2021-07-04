@@ -24,13 +24,6 @@ async def mute_member(ctx, member: discord.Member, reason: str, time: int):
 
         try:
             role = await ctx.guild.create_role(name="muted", reason="To use for muting bad members")
-            # Remove perms for role to chat in any channel
-            for channel in ctx.guild.channels: 
-                await channel.set_permissions(
-                    role,
-                    send_messages=False,
-                    add_reactions=False
-                )
             embed = discord.Embed(
                 title="Role created successfully",
                 description="muted role created."
@@ -39,11 +32,19 @@ async def mute_member(ctx, member: discord.Member, reason: str, time: int):
         # If the bot can't create the new role
         except discord.Forbidden as e:
             raise e
-    
-    # Add muted role to the member, wait the specified amount of time,
-    # then unmute member by removing the role.
-    try:   
+
+    try:
+        # First we give member the muted role
         await member.add_roles(role)
+
+        # Then we need to ensure they have correct permissions
+        for channel in ctx.guild.channels:
+            if channel.permissions_for(member).add_reactions == True:
+                await channel.set_permissions(role, add_reactions = False)
+            if channel.permissions_for(member).send_messages == True:
+                await channel.set_permissions(role, send_messages = False)
+
+        # Send confirmation message
         embed = discord.Embed(
             title=f"{ member.display_name } has been muted",
             colour=discord.Color.green(),
@@ -51,6 +52,8 @@ async def mute_member(ctx, member: discord.Member, reason: str, time: int):
         )
         embed.set_thumbnail(url=member.avatar_url)
         await ctx.send(embed=embed)
+
+        # Wait specified amount of time, then remove muted role
         await asyncio.sleep(time*60)
         await member.remove_roles(role)
     except discord.Forbidden as e:
@@ -96,7 +99,6 @@ class Mod(commands.Cog, name="moderation"):
     @commands.guild_only()
     @commands.has_permissions(kick_members=True)
     async def warn(self, ctx, member: discord.Member, *, reason="None"):
-        # response = await database.warn_member(ctx.guild.id, member.id, reason)
         response = await database.warn_member(ctx, member, reason)
         return await ctx.send(embed=response)
 
