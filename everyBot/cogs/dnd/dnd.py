@@ -41,25 +41,10 @@ class DnD(commands.Cog, name='dnd'):
 
         return ctx.command.cog_name.lower() in installed_modules
 
-    """ Rollto """
-    @commands.command(
-        usage="[text]",
-        description="roll a d20 to foresee your fate"
-    )
-    @commands.check(check_disabled)
-    async def rollto(self, ctx, *, text):
-        embed = discord.Embed(
-            title="Roll Results",
-            colour=discord.Color.blue(),
-            description=f"{ ctx.author.mention } rolled to { text } and got a { random.randint(0, 20) }!"
-        )
-
-        return await ctx.send(embed=embed)
-
     """ Roll """
     @commands.command(
         usage="[dice]",
-        description="Roll a specified dice (eg. 2d6)"
+        description="Roll a specified dice (eg. 2d6) followed by an optional action"
     )
     @commands.check(check_disabled)
     async def roll(self, ctx, *message):
