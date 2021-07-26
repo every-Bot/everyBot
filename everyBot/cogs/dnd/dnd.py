@@ -62,9 +62,12 @@ class DnD(commands.Cog, name='dnd'):
         description="Roll a specified dice (eg. 2d6)"
     )
     @commands.check(check_disabled)
-    async def roll(self, ctx, *, text):
+    async def roll(self, ctx, *message):
+        text = ' '.join(message)
+        if not text:
+            text = "1d20"
         try:
-            result = d20.roll(text)
+            result = d20.roll(text, allow_comments=True)
         except:
             embed = discord.Embed(
                 title="Unable to perform roll",
@@ -72,11 +75,14 @@ class DnD(commands.Cog, name='dnd'):
                 description=f"Check your formatting and try again"
             )
             return await ctx.send(embed=embed)
+        response = ctx.author.mention + " rolled a " + str(result)
+        if result.comment:
+            response = response + " to: " + str(result.comment)
 
         embed = discord.Embed(
             title="Roll Results",
             colour=discord.Color.blue(),
-            description=f"{ ctx.author.mention } rolled { result }!"
+            description=f"{ response }"
         )
         return await ctx.send(embed=embed)
 
