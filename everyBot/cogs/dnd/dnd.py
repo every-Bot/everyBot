@@ -3,12 +3,17 @@ from discord.ext import commands
 from discord.ext.commands import has_permissions
 from textwrap import dedent
 
-import random
+import typing
+import re
+import time
 
 from pymongo.errors import ServerSelectionTimeoutError
 from everyBot.cogs import database
 
-import d20
+from d20 import parse, roll, RollSyntaxError
+
+def die(arg):
+    return parse(arg, allow_comments=True)
 
 """ Disabled Check """
 async def check_disabled(ctx):
@@ -47,27 +52,20 @@ class DnD(commands.Cog, name='dnd'):
         description="Roll a specified dice (eg. 2d6) followed by an optional action"
     )
     @commands.check(check_disabled)
-    async def roll(self, ctx, *, text):
-        if not text:
-            text = "1d20"
+    async def roll(self, ctx, dice: typing.Optional[die] = "1d20", *, action: str = None):
         try:
-            result = d20.roll(text, allow_comments=True)
-        except:
-            embed = discord.Embed(
-                title="Unable to perform roll",
-                colour=discord.Color.red(),
-                description=f"Check your formatting and try again"
-            )
-            return await ctx.send(embed=embed)
-        response = ctx.author.mention + " rolled a " + str(result)
-        if result.comment:
-            response = response + " to: " + str(result.comment)
+            result = roll(dice, allow_comments=True)
+        except RollSyntaxError: # Theoretically this shouldn't be possible, but just in case.
+            return await ctx.message.reply(f"Invalid dice format: { dice }")
 
         embed = discord.Embed(
-            title="Roll Results",
+            title=f"{ ctx.author.display_name } Rolled ({ dice })",
             colour=discord.Color.blue(),
-            description=f"{ response }"
+            description=f"{ result }"
         )
+        if action:
+            embed.description = f"{ embed.description } to { action }"
+
         return await ctx.send(embed=embed)
 
     """ Error Check """
