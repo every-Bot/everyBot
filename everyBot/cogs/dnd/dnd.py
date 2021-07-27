@@ -47,8 +47,7 @@ class DnD(commands.Cog, name='dnd'):
         description="Roll a specified dice (eg. 2d6) followed by an optional action"
     )
     @commands.check(check_disabled)
-    async def roll(self, ctx, *message):
-        text = ' '.join(message)
+    async def roll(self, ctx, *, text):
         if not text:
             text = "1d20"
         try:
