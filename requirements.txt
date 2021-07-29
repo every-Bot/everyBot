@@ -5,3 +5,4 @@ dnspython
 psutil
 motor
 requests
+d20
